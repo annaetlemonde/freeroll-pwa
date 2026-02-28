@@ -1,6 +1,6 @@
-// sw.js — Freeroll Poker PWA
+// sw.js — 5D PWA
 // IMPORTANT: bump CACHE_NAME every time you update index.html
-const CACHE_NAME = "freeroll-cache-v9";
+const CACHE_NAME = "5d-cache-v10";
 
 const ASSETS = [
   "./",
@@ -13,9 +13,7 @@ const ASSETS = [
 
 // Install: pre-cache core assets
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
   self.skipWaiting();
 });
 
@@ -34,7 +32,6 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // Only handle same-origin (your site) requests
   if (url.origin !== self.location.origin) return;
 
   event.respondWith(
@@ -42,9 +39,7 @@ self.addEventListener("fetch", (event) => {
       if (cached) return cached;
 
       return fetch(req).then((res) => {
-        // Only cache successful basic responses
         if (!res || res.status !== 200 || res.type !== "basic") return res;
-
         const copy = res.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
         return res;
