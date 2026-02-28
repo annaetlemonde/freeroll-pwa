@@ -1,11 +1,11 @@
 {
-  "name": "Freeroll Poker",
-  "short_name": "Freeroll",
+  "name": "5D",
+  "short_name": "5D",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#111111",
-  "theme_color": "#111111",
+  "background_color": "#03060c",
+  "theme_color": "#03060c",
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
