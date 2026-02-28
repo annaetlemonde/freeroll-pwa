@@ -9,9 +9,9 @@
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#111111" />
+  <meta name="theme-color" content="#0b0f19" />
 
-  <!-- iOS: make it “app-like” -->
+  <!-- iOS “app-like” -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Freeroll" />
@@ -19,208 +19,399 @@
 
   <style>
     :root{
-      --bg:#ffffff;
-      --text:#111;
-      --muted:#666;
-      --border:#ddd;
-      --card:#fff;
-      --chip:#f4f4f4;
-      --danger:#b00020;
-      --shadow: 0 1px 0 rgba(0,0,0,0.03);
+      --bg0:#070a12;
+      --bg1:#0b0f19;
+      --card:#0f1524;
+      --card2:#0c1220;
+      --text:#eef2ff;
+      --muted:#a8b0c2;
+      --border: rgba(255,255,255,0.10);
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --accent:#8b5cf6;
+      --accent2:#22c55e;
+      --danger:#ef4444;
+      --chip: rgba(255,255,255,0.08);
+      --input: rgba(255,255,255,0.06);
+      --input2: rgba(255,255,255,0.10);
     }
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 16px; max-width: 980px; color:var(--text); background:var(--bg); }
-    h1 { margin: 0 0 6px; letter-spacing:-0.3px; }
-    h2 { margin: 0 0 8px; letter-spacing:-0.2px; }
-    h3 { margin: 0 0 6px; letter-spacing:-0.2px; }
-    .muted { color:var(--muted); font-size: 12px; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .grid3 { display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-    .card { border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin: 12px 0; background:var(--card); box-shadow: var(--shadow); }
-    label { display:block; font-size: 12px; color:#444; margin: 10px 0 6px; }
-    input, textarea, select { width:100%; padding: 12px; border: 1px solid #ccc; border-radius: 12px; font-size: 14px; background:#fff; }
-    textarea { min-height: 84px; resize: vertical; }
-    button { padding: 11px 12px; border: 1px solid #222; background:#111; color:#fff; border-radius: 12px; cursor:pointer; font-weight: 600; }
-    button.secondary { background:#fff; color:#111; }
-    button.ghost { background:var(--chip); color:#111; border-color:#e6e6e6; }
-    button.danger { background:var(--danger); border-color:var(--danger); }
-    .btns { display:flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-    .pill { display:inline-block; padding: 2px 8px; border-radius: 999px; background:var(--chip); font-size: 12px; margin-left: 8px; border:1px solid #eee; }
-    .hands { display:grid; gap: 10px; }
-    .handItem { border: 1px solid #eee; border-radius: 14px; padding: 12px; cursor:pointer; background:#fff; }
-    .handItem:hover { border-color:#ccc; }
-    pre { background:#0b0b0b; color:#f1f1f1; padding: 12px; border-radius: 14px; overflow:auto; }
 
-    /* villains */
-    .vRow { border:1px solid #eee; border-radius:14px; padding:12px; background:#fff; }
-    .vRowHeader { display:flex; justify-content:space-between; align-items:center; gap:10px; }
-    .vRowGrid { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:10px; }
+    html, body { height:100%; }
+    body{
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 0%, rgba(139,92,246,0.25), transparent 60%),
+        radial-gradient(900px 600px at 90% 10%, rgba(34,197,94,0.20), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+    }
+
+    .wrap{ max-width: 980px; margin: 0 auto; padding: 18px 16px 40px; }
+    h1{ margin:0; font-size: 28px; letter-spacing:-0.5px; }
+    h2{ margin:0 0 10px; font-size: 18px; letter-spacing:-0.2px; }
+    h3{ margin:0 0 8px; font-size: 14px; letter-spacing:-0.1px; color: var(--text); }
+    .muted{ color: var(--muted); font-size: 12px; line-height: 1.35; }
 
     .topbar{
       display:flex;
       align-items:flex-end;
       justify-content:space-between;
       gap:12px;
+      margin-bottom: 14px;
+    }
+    .topbar .right{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+    .pill{
+      display:inline-flex; align-items:center; gap:6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--chip);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin: 12px 0;
+      backdrop-filter: blur(10px);
+    }
+
+    .row{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .grid4{ display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+
+    label{ display:block; font-size: 12px; color: var(--muted); margin: 10px 0 6px; }
+    input, textarea, select{
+      width: 100%;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--input);
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+    }
+    input::placeholder, textarea::placeholder{ color: rgba(168,176,194,0.55); }
+    textarea{ min-height: 88px; resize: vertical; }
+
+    select{ background: var(--input); }
+    input:focus, textarea:focus, select:focus{
+      border-color: rgba(139,92,246,0.6);
+      box-shadow: 0 0 0 4px rgba(139,92,246,0.18);
+      background: var(--input2);
+    }
+
+    .btns{ display:flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    button{
+      padding: 11px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.primary{
+      background: linear-gradient(90deg, rgba(139,92,246,0.9), rgba(34,197,94,0.75));
+      border-color: rgba(255,255,255,0.12);
+    }
+    button.secondary{
+      background: rgba(255,255,255,0.05);
+    }
+    button.ghost{
+      background: transparent;
+    }
+    button.danger{
+      background: rgba(239,68,68,0.18);
+      border-color: rgba(239,68,68,0.35);
+      color: #ffe5e5;
+    }
+    button:active{ transform: translateY(1px); }
+
+    .hands{ display:grid; gap: 10px; margin-top: 10px; }
+    .handItem{
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(255,255,255,0.04);
+      cursor:pointer;
+    }
+    .handItem:hover{ border-color: rgba(255,255,255,0.20); }
+
+    pre{
+      margin: 10px 0 0;
+      background: #070912;
+      border: 1px solid rgba(255,255,255,0.08);
+      color:#e9ecf8;
+      padding: 12px;
+      border-radius: 16px;
+      overflow:auto;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    /* Villains + Levels rows */
+    .miniRow{
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(255,255,255,0.04);
+    }
+    .miniHeader{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .miniGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:10px;
+      margin-top: 10px;
+    }
+
+    /* Card picker */
+    .cardsWrap{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .cardPick{
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(255,255,255,0.04);
+    }
+    .cardFace{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
       margin-bottom: 8px;
     }
-    .topbar .right { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .bigCard{
+      width: 54px; height: 72px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+      display:flex; align-items:center; justify-content:center;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+    .suit-red{ color: #ff6b6b; }
+    .suit-white{ color: #f3f4ff; }
 
     @media (max-width: 860px){
-      .row, .grid3 { grid-template-columns: 1fr; }
-      .vRowGrid { grid-template-columns: 1fr; }
-      .topbar{ align-items:flex-start; flex-direction:column; }
+      .topbar{ flex-direction: column; align-items:flex-start; }
+      .row, .grid3, .grid4{ grid-template-columns: 1fr; }
+      .miniGrid{ grid-template-columns: 1fr; }
+      .cardsWrap{ grid-template-columns: 1fr; }
     }
   </style>
 </head>
 
 <body>
-  <div class="topbar">
-    <div>
-      <h1>Freeroll Poker <span class="pill">MVP</span></h1>
-      <div class="muted">Log big hands fast. Works offline. Stored locally on your phone (no cloud).</div>
-    </div>
-    <div class="right">
-      <button class="ghost" id="exportText" type="button">Copy latest</button>
-      <button class="ghost" id="exportJson" type="button">Export JSON</button>
-      <button class="danger" id="wipeAll" type="button">Delete all</button>
-    </div>
-  </div>
+  <div class="wrap">
 
-  <div class="card">
-    <h2>Session</h2>
-    <div class="row">
+    <div class="topbar">
       <div>
-        <label>Tournament / Casino</label>
-        <input id="sessionName" placeholder="e.g., Borgata $600 Deepstack" />
+        <h1>Freeroll Poker <span class="pill">MTT Hand Logger</span></h1>
+        <div class="muted">Fast logging for turning-point hands. Offline. Local storage. iPhone-friendly.</div>
       </div>
-      <div>
-        <label>Date</label>
-        <input id="sessionDate" type="date" />
-      </div>
-    </div>
-    <div class="row">
-      <div>
-        <label>Current Blinds (optional)</label>
-        <input id="blinds" placeholder="e.g., 1k/2k (BB ante 2k)" />
-      </div>
-      <div>
-        <label>Notes (optional)</label>
-        <input id="sessionNotes" placeholder="e.g., 2 tables left, avg 28bb" />
-      </div>
-    </div>
-    <div class="btns">
-      <button class="secondary" id="saveSession" type="button">Save session</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>Log a Big Hand</h2>
-
-    <div class="grid3">
-      <div>
-        <label>Hero Position</label>
-        <select id="heroPos">
-          <option>UTG</option><option>UTG+1</option><option>LJ</option><option>HJ</option><option>CO</option>
-          <option selected>BTN</option><option>SB</option><option>BB</option>
-        </select>
-      </div>
-      <div>
-        <label>Hero Stack (bb)</label>
-        <input id="heroStack" inputmode="decimal" placeholder="e.g., 32" />
-      </div>
-      <div>
-        <label>Hero Cards</label>
-        <input id="heroCards" placeholder="e.g., AcJs" />
+      <div class="right">
+        <button class="ghost" id="exportText" type="button">Copy latest</button>
+        <button class="ghost" id="exportJson" type="button">Export JSON</button>
+        <button class="danger" id="wipeAll" type="button">Delete all</button>
       </div>
     </div>
 
-    <div class="grid3">
-      <div>
-        <label>Game</label>
-        <select id="handType">
-          <option selected>NLH</option>
-          <option>PLO</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div>
-        <label>Result</label>
-        <select id="result">
-          <option selected>Won</option>
-          <option>Lost</option>
-          <option>Chopped</option>
-          <option>Busted</option>
-        </select>
-      </div>
-      <div>
-        <label>Pot Size (bb, optional)</label>
-        <input id="pot" inputmode="decimal" placeholder="e.g., 18" />
-      </div>
-    </div>
+    <!-- Session -->
+    <div class="card">
+      <h2>Session</h2>
 
-    <!-- Villains -->
-    <div class="card" style="border-color:#eee; background:#fafafa;">
-      <div class="vRowHeader">
+      <div class="row">
         <div>
-          <h3 style="margin:0;">Villains</h3>
-          <div class="muted">Add everyone involved (multiway pots supported).</div>
+          <label>Tournament / Casino</label>
+          <input id="sessionName" placeholder="e.g., Borgata $600 Deepstack" />
         </div>
-        <button class="secondary" id="addVillainBtn" type="button">+ Add villain</button>
+        <div>
+          <label>Date</label>
+          <input id="sessionDate" type="date" />
+        </div>
       </div>
 
-      <div id="villainsList" style="margin-top:12px; display:grid; gap:10px;"></div>
-    </div>
-
-    <div class="row">
-      <div>
-        <label>Preflop Action (quick)</label>
-        <textarea id="preflop" placeholder="e.g., Hero opens 2.2bb, CO calls, BB 3bets 8bb, Hero calls"></textarea>
+      <div class="row">
+        <div>
+          <label>Current Blinds (SB / BB)</label>
+          <div class="grid2" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <select id="sbSelect"></select>
+            <select id="bbSelect"></select>
+          </div>
+          <div class="muted" style="margin-top:6px;">Tip: defaults to BB ≈ 2×SB (you can override).</div>
+        </div>
+        <div>
+          <label>Notes (optional)</label>
+          <input id="sessionNotes" placeholder="e.g., 2 tables left, avg 28bb" />
+        </div>
       </div>
-      <div>
-        <label>Postflop Action (quick)</label>
-        <textarea id="postflop" placeholder="e.g., Flop J♠8♦2♣: BB bets 5bb, Hero calls..."></textarea>
+
+      <!-- Next levels -->
+      <div class="card" style="margin-top:12px; background: rgba(255,255,255,0.02);">
+        <div class="miniHeader">
+          <div>
+            <h3>Next Levels</h3>
+            <div class="muted">Add upcoming levels so you remember the structure.</div>
+          </div>
+          <button class="secondary" id="addLevelBtn" type="button">+ Add level</button>
+        </div>
+        <div id="levelsList" style="margin-top:12px; display:grid; gap:10px;"></div>
+      </div>
+
+      <div class="btns">
+        <button class="secondary" id="saveSession" type="button">Save session</button>
       </div>
     </div>
 
-    <div class="row">
-      <div>
-        <label>Board (optional)</label>
-        <input id="board" placeholder="e.g., Js 8d 2c | Qh | 2s" />
+    <!-- Log Hand -->
+    <div class="card">
+      <h2>Log a Big Hand</h2>
+
+      <div class="grid3">
+        <div>
+          <label>Hero Position</label>
+          <select id="heroPos">
+            <option>UTG</option><option>UTG+1</option><option>LJ</option><option>HJ</option><option>CO</option>
+            <option selected>BTN</option><option>SB</option><option>BB</option>
+          </select>
+        </div>
+        <div>
+          <label>Hero Stack (bb)</label>
+          <input id="heroStack" inputmode="decimal" placeholder="e.g., 32" />
+        </div>
+        <div>
+          <label>Game</label>
+          <select id="handType">
+            <option selected>NLH</option>
+            <option>PLO</option>
+            <option>Other</option>
+          </select>
+        </div>
       </div>
-      <div>
-        <label>Turning Point / What mattered</label>
-        <input id="turningPoint" placeholder="e.g., I think flop sizing forced awkward turn jam..." />
+
+      <!-- Hole cards picker -->
+      <div style="margin-top:12px;">
+        <label>Hero Cards</label>
+        <div class="cardsWrap">
+          <div class="cardPick">
+            <div class="cardFace">
+              <b>Card 1</b>
+              <div class="bigCard" id="card1Face">A♠</div>
+            </div>
+            <div class="grid2" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <select id="c1Rank"></select>
+              <select id="c1Suit"></select>
+            </div>
+          </div>
+
+          <div class="cardPick">
+            <div class="cardFace">
+              <b>Card 2</b>
+              <div class="bigCard" id="card2Face">K♣</div>
+            </div>
+            <div class="grid2" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <select id="c2Rank"></select>
+              <select id="c2Suit"></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="pill" style="margin-top:10px;">
+          <span style="opacity:.9;">Shorthand:</span>
+          <b id="heroCardsText" style="color:var(--text)">AsKc</b>
+        </div>
+      </div>
+
+      <div class="grid3" style="margin-top:12px;">
+        <div>
+          <label>Result</label>
+          <select id="result">
+            <option selected>Won</option>
+            <option>Lost</option>
+            <option>Chopped</option>
+            <option>Busted</option>
+          </select>
+        </div>
+        <div>
+          <label>Pot Size (bb, optional)</label>
+          <input id="pot" inputmode="decimal" placeholder="e.g., 18" />
+        </div>
+        <div>
+          <label>Board (optional)</label>
+          <input id="board" placeholder="e.g., Js 8d 2c | Qh | 2s" />
+        </div>
+      </div>
+
+      <!-- Villains -->
+      <div class="card" style="margin-top:12px; background: rgba(255,255,255,0.02);">
+        <div class="miniHeader">
+          <div>
+            <h3>Villains</h3>
+            <div class="muted">Add everyone involved (multiway supported).</div>
+          </div>
+          <button class="secondary" id="addVillainBtn" type="button">+ Add villain</button>
+        </div>
+        <div id="villainsList" style="margin-top:12px; display:grid; gap:10px;"></div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Preflop Action (quick)</label>
+          <textarea id="preflop" placeholder="Hero opens 2.2bb, CO calls, BB 3bets 8bb, Hero calls..."></textarea>
+        </div>
+        <div>
+          <label>Postflop Action (quick)</label>
+          <textarea id="postflop" placeholder="Flop J♠8♦2♣: BB bets 5bb, Hero calls..."></textarea>
+        </div>
+      </div>
+
+      <label>Turning Point / What mattered</label>
+      <input id="turningPoint" placeholder="e.g., Flop sizing forced awkward turn jam decision..." />
+
+      <div class="btns">
+        <button class="primary" id="addHand" type="button">Save hand</button>
+        <button class="secondary" id="clearForm" type="button">Clear</button>
       </div>
     </div>
 
-    <div class="btns">
-      <button id="addHand" type="button">Save hand</button>
-      <button class="secondary" id="clearForm" type="button">Clear</button>
+    <!-- Hands -->
+    <div class="card">
+      <h2>Hands</h2>
+      <div class="muted">Tap a hand to view / copy. (Newest first.)</div>
+      <div class="hands" id="handsList"></div>
     </div>
-  </div>
 
-  <div class="card">
-    <h2>Hands</h2>
-    <div class="muted">Tap a hand to view/share it.</div>
-    <div class="hands" id="handsList" style="margin-top:10px;"></div>
-  </div>
-
-  <div class="card" id="detailCard" style="display:none;">
-    <h2>Hand Detail</h2>
-    <div class="btns">
-      <button class="secondary" id="copyDetail" type="button">Copy as text</button>
-      <button class="danger" id="deleteOne" type="button">Delete this hand</button>
-      <button class="secondary" id="closeDetail" type="button">Close</button>
+    <!-- Detail -->
+    <div class="card" id="detailCard" style="display:none;">
+      <h2>Hand Detail</h2>
+      <div class="btns">
+        <button class="secondary" id="copyDetail" type="button">Copy as text</button>
+        <button class="danger" id="deleteOne" type="button">Delete</button>
+        <button class="ghost" id="closeDetail" type="button">Close</button>
+      </div>
+      <pre id="detailText"></pre>
     </div>
-    <pre id="detailText"></pre>
+
   </div>
 
 <script>
-  // Register service worker (offline)
+  // Offline
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
   }
 
-  const KEY = "freeroll_pwa_data_v2";
+  const KEY = "freeroll_pwa_data_v3";
 
   function nowIso() { return new Date().toISOString(); }
   function byId(id){ return document.getElementById(id); }
@@ -231,7 +422,127 @@
   }
   function save(data){ localStorage.setItem(KEY, JSON.stringify(data)); }
 
-  // ---- Villains UI ----
+  // --- Blind options (100 -> 2,000,000 with common MTT increments)
+  const BLIND_VALUES = [
+    100,200,300,400,500,600,800,
+    1000,1200,1500,2000,2500,3000,4000,5000,6000,8000,
+    10000,12000,15000,20000,25000,30000,40000,50000,60000,80000,
+    100000,120000,150000,200000,250000,300000,400000,500000,600000,800000,
+    1000000,1200000,1500000,2000000
+  ];
+
+  function fmtBlind(n){
+    if (n >= 1000000) {
+      const m = n / 1000000;
+      return (Number.isInteger(m) ? `${m}M` : `${m.toFixed(1)}M`);
+    }
+    if (n >= 1000) {
+      const k = n / 1000;
+      return (Number.isInteger(k) ? `${k}K` : `${k.toFixed(1)}K`);
+    }
+    return String(n);
+  }
+
+  function fillBlindSelect(sel, defaultVal){
+    sel.innerHTML = BLIND_VALUES.map(v => {
+      const lab = fmtBlind(v);
+      return `<option value="${v}" ${v===defaultVal ? "selected":""}>${lab}</option>`;
+    }).join("");
+  }
+
+  // --- Next Levels UI
+  function addLevelRow(level = { sb: 200, bb: 400 }) {
+    const container = byId("levelsList");
+    const id = crypto.randomUUID();
+
+    const div = document.createElement("div");
+    div.className = "miniRow";
+    div.dataset.lid = id;
+
+    div.innerHTML = `
+      <div class="miniHeader">
+        <b>Level</b>
+        <button class="danger" type="button" data-remove="${id}">Remove</button>
+      </div>
+      <div class="miniGrid">
+        <div>
+          <label>SB</label>
+          <select data-sb="${id}"></select>
+        </div>
+        <div>
+          <label>BB</label>
+          <select data-bb="${id}"></select>
+        </div>
+        <div>
+          <label>Note (optional)</label>
+          <input data-note="${id}" placeholder="e.g., ante changes / break" value="${level.note || ""}" />
+        </div>
+      </div>
+    `;
+
+    container.appendChild(div);
+
+    const sbSel = div.querySelector(`[data-sb="${id}"]`);
+    const bbSel = div.querySelector(`[data-bb="${id}"]`);
+    fillBlindSelect(sbSel, level.sb || 200);
+    fillBlindSelect(bbSel, level.bb || 400);
+
+    div.querySelector(`[data-remove="${id}"]`).onclick = () => div.remove();
+  }
+
+  function getLevelsFromUI(){
+    const rows = Array.from(byId("levelsList").querySelectorAll(".miniRow"));
+    return rows.map(r => {
+      const id = r.dataset.lid;
+      const sb = Number(r.querySelector(`[data-sb="${id}"]`).value);
+      const bb = Number(r.querySelector(`[data-bb="${id}"]`).value);
+      const note = r.querySelector(`[data-note="${id}"]`).value.trim();
+      return { sb, bb, note };
+    });
+  }
+
+  function clearLevelsUI(){
+    byId("levelsList").innerHTML = "";
+  }
+
+  // --- Card picker
+  const RANKS = ["A","K","Q","J","T","9","8","7","6","5","4","3","2"];
+  const SUITS = [
+    { code:"s", sym:"♠", cls:"suit-white" },
+    { code:"h", sym:"♥", cls:"suit-red" },
+    { code:"d", sym:"♦", cls:"suit-red" },
+    { code:"c", sym:"♣", cls:"suit-white" }
+  ];
+
+  function fillRankSelect(sel, def){
+    sel.innerHTML = RANKS.map(r => `<option ${r===def?"selected":""}>${r}</option>`).join("");
+  }
+  function fillSuitSelect(sel, def){
+    sel.innerHTML = SUITS.map(s => `<option value="${s.code}" ${s.code===def?"selected":""}>${s.sym}</option>`).join("");
+  }
+  function suitMeta(code){ return SUITS.find(s => s.code === code) || SUITS[0]; }
+
+  function updateHeroCards(){
+    const r1 = byId("c1Rank").value;
+    const s1 = byId("c1Suit").value;
+    const r2 = byId("c2Rank").value;
+    const s2 = byId("c2Suit").value;
+
+    const m1 = suitMeta(s1), m2 = suitMeta(s2);
+
+    const face1 = byId("card1Face");
+    const face2 = byId("card2Face");
+    face1.classList.remove("suit-red","suit-white");
+    face2.classList.remove("suit-red","suit-white");
+    face1.classList.add(m1.cls);
+    face2.classList.add(m2.cls);
+    face1.textContent = `${r1}${m1.sym}`;
+    face2.textContent = `${r2}${m2.sym}`;
+
+    byId("heroCardsText").textContent = `${r1}${s1}${r2}${s2}`; // e.g., AsKc
+  }
+
+  // --- Villains UI
   function posOptionsHtml(selected) {
     const positions = ["UTG","UTG+1","LJ","HJ","CO","BTN","SB","BB"];
     return positions.map(p => `<option ${p===selected?"selected":""}>${p}</option>`).join("");
@@ -242,16 +553,16 @@
     const id = crypto.randomUUID();
 
     const div = document.createElement("div");
-    div.className = "vRow";
+    div.className = "miniRow";
     div.dataset.vid = id;
 
     div.innerHTML = `
-      <div class="vRowHeader">
+      <div class="miniHeader">
         <b>Villain</b>
         <button class="danger" type="button" data-remove="${id}">Remove</button>
       </div>
 
-      <div class="vRowGrid">
+      <div class="miniGrid">
         <div>
           <label>Position</label>
           <select data-pos="${id}">${posOptionsHtml(v.pos || "BB")}</select>
@@ -272,7 +583,7 @@
   }
 
   function getVillainsFromUI() {
-    const rows = Array.from(byId("villainsList").querySelectorAll(".vRow"));
+    const rows = Array.from(byId("villainsList").querySelectorAll(".miniRow"));
     const villains = rows.map(r => {
       const vid = r.dataset.vid;
       const pos = r.querySelector(`[data-pos="${vid}"]`).value;
@@ -280,7 +591,6 @@
       const note = r.querySelector(`[data-note="${vid}"]`).value.trim();
       return { pos, stackBb, note };
     });
-    // filter out completely blank rows (in case someone adds and leaves empty)
     return villains.filter(v => v.pos || v.stackBb || v.note);
   }
 
@@ -289,17 +599,27 @@
     addVillainRow({ pos:"BB", stackBb:"", note:"" });
   }
 
-  // ---- Formatting ----
+  // --- Formatting
+  function formatSessionBlinds(session){
+    const sb = session.sb ? fmtBlind(session.sb) : "?";
+    const bb = session.bb ? fmtBlind(session.bb) : "?";
+    return `${sb}/${bb}`;
+  }
+
   function formatHand(session, h) {
     const sName = session.sessionName || "Session";
     const sDate = session.sessionDate || "";
-    const blinds = session.blinds ? ` | Blinds: ${session.blinds}` : "";
-    const header = `${sName}${sDate ? " ("+sDate+")" : ""}${blinds}`;
+    const blinds = (session.sb && session.bb) ? ` | Blinds: ${formatSessionBlinds(session)}` : "";
 
+    const header = `${sName}${sDate ? " ("+sDate+")" : ""}${blinds}`;
     const heroLine = `Hero (${h.heroPos}) ${h.heroStack || "?"}bb | Cards: ${h.heroCards || "?"}`;
     const villainsLine = (h.villains && h.villains.length)
       ? "Villains: " + h.villains.map(v => `${v.pos} ${v.stackBb || "?"}bb${v.note ? " ("+v.note+")" : ""}`).join(" | ")
       : "Villains: ?";
+
+    const nextLevels = (session.nextLevels && session.nextLevels.length)
+      ? "Next levels: " + session.nextLevels.map(l => `${fmtBlind(l.sb)}/${fmtBlind(l.bb)}${l.note?(" ("+l.note+")"):""}`).join(" → ")
+      : "";
 
     const board = h.board ? `Board: ${h.board}` : "";
     const pot = h.pot ? `Pot: ${h.pot}bb` : "";
@@ -307,6 +627,8 @@
 
     const lines = [
       header,
+      session.sessionNotes ? `Session note: ${session.sessionNotes}` : "",
+      nextLevels,
       heroLine,
       villainsLine,
       h.preflop ? `Preflop: ${h.preflop.trim()}` : "",
@@ -321,34 +643,43 @@
     return lines.join("\n");
   }
 
-  // ---- Render ----
+  // --- Render
   function render() {
     const data = load();
 
-    // populate session inputs if present
     byId("sessionName").value = data.session.sessionName || "";
     byId("sessionDate").value = data.session.sessionDate || "";
-    byId("blinds").value = data.session.blinds || "";
     byId("sessionNotes").value = data.session.sessionNotes || "";
 
+    // Blinds selects
+    const sbSel = byId("sbSelect");
+    const bbSel = byId("bbSelect");
+    fillBlindSelect(sbSel, data.session.sb || 200);
+    fillBlindSelect(bbSel, data.session.bb || 400);
+
+    // Levels
+    clearLevelsUI();
+    (data.session.nextLevels || []).forEach(l => addLevelRow(l));
+
+    // Hands list
     const list = byId("handsList");
     list.innerHTML = "";
-
     const hands = [...data.hands].sort((a,b)=> (b.createdAt||"").localeCompare(a.createdAt||""));
+
     hands.forEach(h => {
       const div = document.createElement("div");
       div.className = "handItem";
-      const title = `${h.result} • ${h.heroPos} • ${h.heroCards || "??"}`;
       const vCount = (h.villains && h.villains.length) ? h.villains.length : 0;
-      const subtitle = `Hero ${h.heroStack || "?"}bb • Villains ${vCount} • ${h.pot ? (h.pot+"bb pot") : "pot ?"} • ${h.handType || "NLH"}`;
+      const title = `${h.result} • ${h.heroPos} • ${h.heroCards || "??"}`;
+      const subtitle = `Hero ${h.heroStack || "?"}bb • ${vCount} villain${vCount===1?"":"s"} • ${h.pot ? (h.pot+"bb pot") : "pot ?"} • ${h.handType || "NLH"}`;
       const small = new Date(h.createdAt).toLocaleString();
 
       div.innerHTML = `
         <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
           <b>${title}</b>
-          <span class="pill">${vCount} villain${vCount===1?"":"s"}</span>
+          <span class="pill">${formatSessionBlinds(data.session)}</span>
         </div>
-        <div class="muted" style="margin-top:4px;">${subtitle}</div>
+        <div class="muted" style="margin-top:6px;">${subtitle}</div>
         <div class="muted" style="margin-top:2px;">${small}</div>
       `;
       div.onclick = () => openDetail(h.id);
@@ -367,40 +698,76 @@
   }
 
   function clearHandForm(){
-    ["heroStack","heroCards","preflop","postflop","board","pot","turningPoint"].forEach(id => byId(id).value = "");
+    byId("heroStack").value = "";
+    byId("preflop").value = "";
+    byId("postflop").value = "";
+    byId("board").value = "";
+    byId("pot").value = "";
+    byId("turningPoint").value = "";
+
     byId("result").value = "Won";
     byId("heroPos").value = "BTN";
     byId("handType").value = "NLH";
+
+    // reset cards
+    byId("c1Rank").value = "A";
+    byId("c1Suit").value = "s";
+    byId("c2Rank").value = "K";
+    byId("c2Suit").value = "c";
+    updateHeroCards();
+
     clearVillainsUI();
   }
 
-  // ---- Buttons ----
+  // --- Wire up
+  byId("addLevelBtn").onclick = () => addLevelRow({ sb: 200, bb: 400, note:"" });
+  byId("addVillainBtn").onclick = () => addVillainRow({ pos:"BB", stackBb:"", note:"" });
+
+  // Blind linking (optional): when SB changes, set BB to closest 2x SB if exists
+  byId("sbSelect").addEventListener("change", () => {
+    const sb = Number(byId("sbSelect").value);
+    const target = sb * 2;
+    const bbSel = byId("bbSelect");
+    const has = BLIND_VALUES.includes(target);
+    if (has) bbSel.value = String(target);
+  });
+
+  // Card pickers
+  fillRankSelect(byId("c1Rank"), "A");
+  fillSuitSelect(byId("c1Suit"), "s");
+  fillRankSelect(byId("c2Rank"), "K");
+  fillSuitSelect(byId("c2Suit"), "c");
+  ["c1Rank","c1Suit","c2Rank","c2Suit"].forEach(id => byId(id).addEventListener("change", updateHeroCards));
+  updateHeroCards();
+
   byId("saveSession").onclick = () => {
     const data = load();
     data.session = {
       sessionName: byId("sessionName").value.trim(),
       sessionDate: byId("sessionDate").value,
-      blinds: byId("blinds").value.trim(),
-      sessionNotes: byId("sessionNotes").value.trim()
+      sb: Number(byId("sbSelect").value),
+      bb: Number(byId("bbSelect").value),
+      sessionNotes: byId("sessionNotes").value.trim(),
+      nextLevels: getLevelsFromUI()
     };
     save(data);
     render();
     alert("Session saved.");
   };
 
-  byId("addVillainBtn").onclick = () => addVillainRow({ pos:"BB", stackBb:"", note:"" });
-
   byId("addHand").onclick = () => {
     const data = load();
-    const villains = getVillainsFromUI();
+
+    // hero cards shorthand like AsKc
+    const heroCards = byId("heroCardsText").textContent;
 
     const hand = {
       id: crypto.randomUUID(),
       createdAt: nowIso(),
       heroPos: byId("heroPos").value,
       heroStack: byId("heroStack").value.trim(),
-      heroCards: byId("heroCards").value.trim(),
-      villains,
+      heroCards,
+      villains: getVillainsFromUI(),
       handType: byId("handType").value,
       preflop: byId("preflop").value,
       postflop: byId("postflop").value,
@@ -465,11 +832,11 @@
       byId("detailCard").style.display = "none";
       render();
       clearVillainsUI();
+      clearLevelsUI();
     }
   };
 
-  // ---- init ----
-  // default date to today if empty
+  // --- init
   const d = new Date();
   const yyyy = d.getFullYear();
   const mm = String(d.getMonth()+1).padStart(2,'0');
@@ -479,6 +846,7 @@
   const existing = load();
   if(!existing.session.sessionDate) byId("sessionDate").value = today;
 
+  // start with one villain by default
   clearVillainsUI();
   render();
 </script>
