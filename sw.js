@@ -1,6 +1,6 @@
 // sw.js — 5D PWA
 // Bump CACHE_NAME every deploy
-const CACHE_NAME = "5d-cache-v16";
+const CACHE_NAME = "5d-cache-v17";
 
 const ASSETS = [
   "./",
