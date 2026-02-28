@@ -1,6 +1,6 @@
 // sw.js — Freeroll Poker PWA
 // IMPORTANT: bump CACHE_NAME every time you update index.html
-const CACHE_NAME = "freeroll-cache-v8";
+const CACHE_NAME = "freeroll-cache-v9";
 
 const ASSETS = [
   "./",
