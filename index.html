@@ -9,7 +9,7 @@
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#0b0f19" />
+  <meta name="theme-color" content="#03060c" />
 
   <!-- iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -19,17 +19,23 @@
 
   <style>
     *, *::before, *::after { box-sizing: border-box; }
+
+    /* DARKER, HIGH-CONTRAST THEME */
     :root{
-      --bg0:#070a12;
-      --bg1:#0b0f19;
-      --text:#eef2ff;
-      --muted:#a8b0c2;
-      --border: rgba(255,255,255,0.12);
-      --shadow: 0 10px 30px rgba(0,0,0,0.35);
-      --chip: rgba(255,255,255,0.08);
+      --bg0:#03060c;
+      --bg1:#02040a;
+      --card0:#0c1222;
+      --card1:#10183a;
+      --text:#f5f7ff;
+      --muted:#8b93b1;
+      --border: rgba(255,255,255,0.11);
+      --shadow: 0 12px 34px rgba(0,0,0,0.55);
+      --chip: rgba(255,255,255,0.07);
       --input: rgba(255,255,255,0.06);
       --input2: rgba(255,255,255,0.10);
-      --danger:#ef4444;
+      --danger:#ff5c6c;
+      --accentA: rgba(110,168,255,0.90);
+      --accentB: rgba(34,197,94,0.72);
     }
 
     html, body { height:100%; }
@@ -38,9 +44,10 @@
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color: var(--text);
       background:
-        radial-gradient(1200px 600px at 20% 0%, rgba(139,92,246,0.25), transparent 60%),
-        radial-gradient(900px 600px at 90% 10%, rgba(34,197,94,0.18), transparent 55%),
+        radial-gradient(1100px 560px at 15% -10%, rgba(110,168,255,0.16), transparent 60%),
+        radial-gradient(900px 560px at 90% 0%, rgba(34,197,94,0.10), transparent 55%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
+      -webkit-font-smoothing: antialiased;
     }
 
     .wrap{ max-width: 980px; margin: 0 auto; padding: 18px 16px 44px; overflow-x: hidden; }
@@ -67,7 +74,7 @@
     }
 
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
       border: 1px solid var(--border);
       border-radius: 18px;
       box-shadow: var(--shadow);
@@ -106,10 +113,10 @@
       appearance: none;
     }
     textarea{ min-height: 88px; resize: vertical; }
-    input::placeholder, textarea::placeholder{ color: rgba(168,176,194,0.55); }
+    input::placeholder, textarea::placeholder{ color: rgba(139,147,177,0.55); }
     input:focus, textarea:focus, select:focus{
-      border-color: rgba(139,92,246,0.6);
-      box-shadow: 0 0 0 4px rgba(139,92,246,0.18);
+      border-color: rgba(110,168,255,0.65);
+      box-shadow: 0 0 0 4px rgba(110,168,255,0.16);
       background: var(--input2);
     }
 
@@ -124,15 +131,16 @@
       cursor: pointer;
     }
     button.primary{
-      background: linear-gradient(90deg, rgba(139,92,246,0.95), rgba(34,197,94,0.80));
+      background: linear-gradient(90deg, var(--accentA), var(--accentB));
       border-color: rgba(255,255,255,0.14);
+      color: #05070d;
     }
     button.secondary{ background: rgba(255,255,255,0.05); }
     button.ghost{ background: transparent; }
     button.danger{
-      background: rgba(239,68,68,0.18);
-      border-color: rgba(239,68,68,0.35);
-      color: #ffe5e5;
+      background: rgba(255,92,108,0.18);
+      border-color: rgba(255,92,108,0.35);
+      color: #ffe5e8;
     }
     button:disabled{ opacity: 0.55; cursor: not-allowed; }
     button:active{ transform: translateY(1px); }
@@ -140,9 +148,9 @@
     .seg{ display:flex; gap:8px; flex-wrap:wrap; margin-top: 10px; }
     .seg button{ padding: 10px 12px; border-radius: 999px; font-weight: 800; }
     .seg button.active{
-      border-color: rgba(139,92,246,0.55);
-      box-shadow: 0 0 0 4px rgba(139,92,246,0.16);
-      background: rgba(139,92,246,0.14);
+      border-color: rgba(110,168,255,0.55);
+      box-shadow: 0 0 0 4px rgba(110,168,255,0.14);
+      background: rgba(110,168,255,0.12);
     }
 
     .list{ display:grid; gap: 10px; margin-top: 10px; }
@@ -158,7 +166,7 @@
 
     pre{
       margin: 10px 0 0;
-      background: #070912;
+      background: #050816;
       border: 1px solid rgba(255,255,255,0.08);
       color:#e9ecf8;
       padding: 12px;
@@ -192,7 +200,7 @@
       width: 54px; height: 72px;
       border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.14);
-      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+      background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
       display:flex; align-items:center; justify-content:center;
       font-weight: 900;
       letter-spacing: 0.2px;
@@ -202,7 +210,7 @@
 
     .streetBar{ display:flex; gap:8px; flex-wrap:wrap; margin-top: 10px; }
     .streetBar .pill{ padding: 6px 10px; font-weight: 800; color: var(--text); background: rgba(255,255,255,0.06); }
-    .streetBar .pill.active{ background: rgba(139,92,246,0.18); border-color: rgba(139,92,246,0.45); }
+    .streetBar .pill.active{ background: rgba(110,168,255,0.16); border-color: rgba(110,168,255,0.40); }
 
     @media (max-width: 860px){
       .topbar{ flex-direction: column; align-items:flex-start; }
@@ -219,7 +227,7 @@
     <div class="topbar">
       <div>
         <h1>Freeroll Poker <span class="pill">Quick + Wizard</span></h1>
-        <div class="muted">Tabs: Log (capture) and History (saved hands + friends + send).</div>
+        <div class="muted">Log big hands fast. Offline-first. Tabs: Log (capture) and History (saved hands + friends + send).</div>
       </div>
       <div class="right">
         <button class="ghost" id="exportText" type="button">Copy latest</button>
@@ -268,9 +276,11 @@
           </div>
 
           <div>
-            <label>BB Ante</label>
+            <label>BB Ante (in chips)</label>
             <select id="bbAnteSelect"></select>
-            <div class="muted" style="margin-top:6px;">Base forced pot = SB + BB + BB Ante.</div>
+            <div class="muted" style="margin-top:6px;">
+              Pot math is in <b>bb</b>. Blinds/ante convert from chips → bb automatically.
+            </div>
           </div>
 
           <div>
@@ -743,7 +753,7 @@
   </div>
 
 <script>
-  // Offline (remember to bump your sw.js cache name when you update index.html)
+  // Offline
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
   }
@@ -765,7 +775,7 @@
     return data;
   }
 
-  // Editing state: if set, Save overwrites this hand instead of creating new
+  // Editing state
   let editingHandId = null;
 
   // ---------- Tabs ----------
@@ -1203,23 +1213,27 @@
     return Math.round(s * 100) / 100;
   }
 
-  // preflop inputs are TOTAL invested preflop; subtract blind for SB/BB to avoid double counting.
+  // ✅ FIXED: preflop inputs are TOTAL invested (bb); subtract blind in bb units.
   function sumPreflopAdditional(streetActions, players, session){
-    const sb = Number(session.sb || 0);
-    const bb = Number(session.bb || 0);
+    const sbChips = Number(session.sb || 0);
+    const bbChips = Number(session.bb || 0);
+    if (!bbChips) return 0;
+
+    const sbBB = sbChips / bbChips; // 200/400 = 0.5
+    const bbBB = 1;
 
     const posByKey = {};
     for (const p of (players || [])) posByKey[p.key] = p.pos;
 
     let total = 0;
     for (const [key, x] of Object.entries(streetActions || {})){
-      const entered = Number(x.amt || 0);
-      if (Number.isNaN(entered)) continue;
+      const enteredBB = Number(x.amt || 0);
+      if (Number.isNaN(enteredBB)) continue;
 
       const pos = posByKey[key];
-      const blind = (pos === "SB") ? sb : (pos === "BB") ? bb : 0;
+      const blindBB = (pos === "SB") ? sbBB : (pos === "BB") ? bbBB : 0;
 
-      total += Math.max(entered - blind, 0);
+      total += Math.max(enteredBB - blindBB, 0);
     }
 
     return Math.round(total * 100) / 100;
@@ -1333,25 +1347,40 @@
     byId("riBoardText").value = [flop, turn, river].filter(Boolean).join(" | ") || "";
   }
 
-  // ---------- Pot math ----------
+  // ---------- Pot math (✅ FIXED: chips → bb) ----------
+  function round2(x){ return Math.round((Number(x) || 0) * 100) / 100; }
+
   function computeWizardPot(){
     const session = ensure(load()).session || {};
 
-    const baseForced =
-      Number(session.sb || 0) +
-      Number(session.bb || 0) +
-      Number(session.bbAnte || 0);
+    const sbChips = Number(session.sb || 0);
+    const bbChips = Number(session.bb || 0);
+    const anteChips = Number(session.bbAnte || 0);
 
-    const pfExtra = sumPreflopAdditional(
+    if (!bbChips){
+      wizard.pot = { pf:0, fl:0, tu:0, ri:0, total:0 };
+      wizard.hand.pot = { ...wizard.pot };
+      return;
+    }
+
+    // Convert forced money to bb units
+    const sbBB = sbChips / bbChips;   // 200/400 = 0.5
+    const bbBB = 1;                   // always 1bb
+    const anteBB = anteChips / bbChips;
+
+    const baseForcedBB = sbBB + bbBB + anteBB;
+
+    // PF actions: TOTAL invested preflop in bb; subtract blinds automatically
+    const pfExtraBB = sumPreflopAdditional(
       wizard.hand.streets.preflop.actions,
       wizard.hand.players,
       session
     );
 
-    const pf = baseForced + pfExtra;
-    const fl = pf + sumStreetAmounts(wizard.hand.streets.flop.actions);
-    const tu = fl + sumStreetAmounts(wizard.hand.streets.turn.actions);
-    const ri = tu + sumStreetAmounts(wizard.hand.streets.river.actions);
+    const pf = round2(baseForcedBB + pfExtraBB);
+    const fl = round2(pf + sumStreetAmounts(wizard.hand.streets.flop.actions));
+    const tu = round2(fl + sumStreetAmounts(wizard.hand.streets.turn.actions));
+    const ri = round2(tu + sumStreetAmounts(wizard.hand.streets.river.actions));
 
     wizard.pot = { pf, fl, tu, ri, total: ri };
     wizard.hand.pot = { ...wizard.pot };
@@ -1481,7 +1510,6 @@
     const h = data.hands.find(x => x.id === id);
     if(!h) return;
 
-    // Always go to History tab for detail
     setTab("history");
 
     byId("detailText").textContent = formatHand(data.session, h);
@@ -1750,11 +1778,9 @@
 
     editingHandId = handId;
 
-    // Hide detail panel (history) to avoid confusion
     byId("detailCard").style.display = "none";
     byId("detailCard").dataset.id = "";
 
-    // Go to Log tab and load into correct mode
     setTab("log");
 
     if (h.mode === "quick"){
@@ -1960,7 +1986,7 @@
     save(data);
     renderHands();
     resetQuick();
-    openDetail(h.id); // opens history tab + detail
+    openDetail(h.id);
   };
 
   // Wizard
@@ -2113,7 +2139,7 @@
 
     save(data);
     renderHands();
-    openDetail(h.id); // opens history tab + detail
+    openDetail(h.id);
     resetWizard();
   };
 
@@ -2172,7 +2198,7 @@
     }
   };
 
-  // Friends buttons (history tab)
+  // Friends
   byId("addFriendBtn").onclick = () => {
     const name = byId("friendName").value.trim();
     const phone = normalizePhone(byId("friendPhone").value);
@@ -2194,7 +2220,6 @@
   function boot(){
     const data = ensure(load());
 
-    // default date + defaults
     const d = new Date();
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth()+1).padStart(2,'0');
@@ -2228,10 +2253,8 @@
     setTab("log");
   }
 
-  // ---------- Wire remaining buttons ----------
+  // wire remaining
   byId("qAddVillainBtn").onclick = () => addVillainRow("qVillainsList", { pos:"BB", stackBb:"", note:"" });
-
-  // Session save already wired above; add level wired above
 
   boot();
 </script>
