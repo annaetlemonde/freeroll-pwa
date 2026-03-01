@@ -24,6 +24,14 @@
 
   <style>
 
+    .wizActionRow{ display:grid; grid-template-columns: 1.1fr 1fr 1fr; gap:10px; align-items:end; }
+    @media (max-width: 430px){
+      .wizActionRow{ gap:8px; }
+      .wizActionRow select, .wizActionRow input{ padding:10px 10px; }
+      .wizActionRow label{ font-size:12px; }
+    }
+
+
     .grid2tight{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
     .blinds3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; align-items:end; }
     .miniLbl{ font-size:12px; color: rgba(255,255,255,0.65); margin-bottom:6px; display:block; }
@@ -844,24 +852,19 @@ h1{
 
         <div class="subcard stackSummary" id="stackSummaryPre"></div>
 
-        <div class="streetGrid">
-          <div>
-            <label>Actor</label>
-            <select id="actActorPre"></select>
-          </div>
-          <div>
-            <label>Action</label>
-            <select id="actTypePre">
-              <option value="FOLD">Fold</option>
-              <option value="CHECK">Check</option>
-              <option value="CALL">Call</option>
-              <option value="BET">Bet</option>
-              <option value="RAISE">Raise</option>
-            </select>
-          </div>
-          <div>
-            <label>Bet/Raise To (bb)</label>
-            <input id="actToBbPre" inputmode="decimal" placeholder="e.g., 6.5" />
+        <div class="wizActionRow">
+            <div class="field">
+              <label>Actor</label>
+              <select id="actActorPre"></select>
+            </div>
+            <div class="field">
+              <label>Action</label>
+              <select id="actTypePre"></select>
+            </div>
+            <div class="field">
+              <label>Bet / Raise to (BB)</label>
+              <input id="actToBbPre" inputmode="decimal" placeholder="e.g., 6.5" />
+            </div>
           </div>
         </div>
 
@@ -901,24 +904,19 @@ h1{
         </div>
 
 
-        <div class="streetGrid">
-          <div>
-            <label>Actor</label>
-            <select id="actActorFlop"></select>
-          </div>
-          <div>
-            <label>Action</label>
-            <select id="actTypeFlop">
-              <option value="FOLD">Fold</option>
-              <option value="CHECK">Check</option>
-              <option value="CALL">Call</option>
-              <option value="BET">Bet</option>
-              <option value="RAISE">Raise</option>
-            </select>
-          </div>
-          <div>
-            <label>Bet/Raise To (bb)</label>
-            <input id="actToBbFlop" inputmode="decimal" placeholder="e.g., 6.5" />
+        <div class="wizActionRow">
+            <div class="field">
+              <label>Actor</label>
+              <select id="actActorFlop"></select>
+            </div>
+            <div class="field">
+              <label>Action</label>
+              <select id="actTypeFlop"></select>
+            </div>
+            <div class="field">
+              <label>Bet / Raise to (BB)</label>
+              <input id="actToBbFlop" inputmode="decimal" placeholder="e.g., 6.5" />
+            </div>
           </div>
         </div>
 
@@ -946,24 +944,19 @@ h1{
 
         <div class="subcard stackSummary" id="stackSummaryTurn"></div>
 
-        <div class="streetGrid">
-          <div>
-            <label>Actor</label>
-            <select id="actActorTurn"></select>
-          </div>
-          <div>
-            <label>Action</label>
-            <select id="actTypeTurn">
-              <option value="FOLD">Fold</option>
-              <option value="CHECK">Check</option>
-              <option value="CALL">Call</option>
-              <option value="BET">Bet</option>
-              <option value="RAISE">Raise</option>
-            </select>
-          </div>
-          <div>
-            <label>Bet/Raise To (bb)</label>
-            <input id="actToBbTurn" inputmode="decimal" placeholder="e.g., 6.5" />
+        <div class="wizActionRow">
+            <div class="field">
+              <label>Actor</label>
+              <select id="actActorTurn"></select>
+            </div>
+            <div class="field">
+              <label>Action</label>
+              <select id="actTypeTurn"></select>
+            </div>
+            <div class="field">
+              <label>Bet / Raise to (BB)</label>
+              <input id="actToBbTurn" inputmode="decimal" placeholder="e.g., 6.5" />
+            </div>
           </div>
         </div>
 
@@ -999,24 +992,19 @@ h1{
 
         <div class="subcard stackSummary" id="stackSummaryRiver"></div>
 
-        <div class="streetGrid">
-          <div>
-            <label>Actor</label>
-            <select id="actActorRiver"></select>
-          </div>
-          <div>
-            <label>Action</label>
-            <select id="actTypeRiver">
-              <option value="FOLD">Fold</option>
-              <option value="CHECK">Check</option>
-              <option value="CALL">Call</option>
-              <option value="BET">Bet</option>
-              <option value="RAISE">Raise</option>
-            </select>
-          </div>
-          <div>
-            <label>Bet/Raise To (bb)</label>
-            <input id="actToBbRiver" inputmode="decimal" placeholder="e.g., 6.5" />
+        <div class="wizActionRow">
+            <div class="field">
+              <label>Actor</label>
+              <select id="actActorRiver"></select>
+            </div>
+            <div class="field">
+              <label>Action</label>
+              <select id="actTypeRiver"></select>
+            </div>
+            <div class="field">
+              <label>Bet / Raise to (BB)</label>
+              <input id="actToBbRiver" inputmode="decimal" placeholder="e.g., 6.5" />
+            </div>
           </div>
         </div>
 
