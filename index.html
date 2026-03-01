@@ -114,62 +114,6 @@
 
     
     .logo img{ width:100%; height:100%; display:block; object-fit:cover; object-position:center; opacity:1; }
-
-    .brandText{ min-width: 0; }
-    .brandLine{
-      display:flex;
-      align-items:flex-start;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    /* Big, prominent nav next to logo (slightly higher) */
-    .modeRowInline{
-      display:flex;
-      gap: 10px;
-      align-items:center;
-      transform: translateY(-6px);
-    }
-    .modeRowInline button{
-      padding: 14px 16px;
-      border-radius: 16px;
-      font-size: 14px;
-      font-weight: 950;
-      letter-spacing: 0.2px;
-      min-width: 92px;
-    }
-    .modeRowInline #topQuick{ min-width: 110px; } /* make LOG extra visible */
-
-    /* Larger logo */
-    .logo{
-      width: 64px;
-      height: 64px;
-      border-radius: 18px;
-    }
-
-    /* Hero cards — 4 dropdown boxes in ONE horizontal row on iPhone */
-    .heroSelectRow{
-      display:flex;
-      gap: 8px;
-      align-items:center;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 2px;
-    }
-    .heroSelectRow select{
-      flex: 0 0 auto;
-      width: 92px;
-      padding: 10px;
-      border-radius: 14px;
-      font-size: 16px; /* prevent iOS zoom */
-    }
-    .heroFacesRow{
-      display:flex;
-      gap: 10px;
-      margin-top: 8px;
-      margin-bottom: 10px;
-    }
-    .heroFacesRow .bigCard{ width: 64px; height: 78px; }
-
 h1{
       margin:0;
       font-size: 26px;
@@ -459,11 +403,8 @@ h1{
     }
 
     @media (max-width: 860px){
-      .grid2, .grid3, .streetGrid{ grid-template-columns: 1fr; }
-      /* keep hero card section compact: do NOT force single column */
-      .cardsWrap{ grid-template-columns: 1fr; }
-      .modeRowInline{ overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom: 2px; }
-      .modeRowInline button{ min-width: 96px; }
+      .grid2, .grid3, .cardsWrap, .streetGrid{ grid-template-columns: 1fr; }
+      .modeRow{ grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
       .card{ padding: 12px; }
     }
   </style>
@@ -477,47 +418,25 @@ h1{
     <div class="topbar">
       <div class="topHead">
         <div class="brand">
-          <div class="logo" aria-label="5D logo">
-            <img src="icons/icon-192.png" alt="5D logo" />
+          <div class="logo" aria-label="5D Poker logo">
+            <img src="icons/icon-192.png" alt="5D Poker logo" />
           </div>
           <div class="brandText">
-            <div class="brandLine">
-              <h1>5D</h1>
-              <div class="modeRowInline" aria-label="Primary navigation">
-                <button class="primary" id="topQuick" type="button">Log</button>
-                <button class="secondary" id="topWizard" type="button">Wizard</button>
-                <button class="secondary" id="topHistory" type="button">History</button>
-              </div>
-            </div>
-            <div class="muted">Fast capture, clean logic, offline-first.</div>
-          </div>
-        </div>
-
-        <div class="utilRow">
-          <button class="util" id="copyLatest" type="button">Copy Latest</button>
-          <button class="util" id="exportJson" type="button">Export JSON</button>
-          <button class="util danger" id="deleteAll" type="button">Delete All</button>
-        </div>
-      </div>
-    </div>
-<div>
-            <h1>5D <span class="pill">Quick • Wizard • History</span></h1>
+            <h1 style="margin:0;">5D Poker</h1>
             <div class="muted">Solver meets Notion meets trading terminal — fast capture, clean logic, offline-first.</div>
           </div>
         </div>
-
-        <div class="pill" id="sessionPill">No session</div>
       </div>
 
-      <!-- BIG TOP OPTIONS -->
-      <div class="modeRow">
+      <!-- Mode select -->
+      <div class="modeRow" style="margin-top:10px;">
         <button class="primary" id="topQuick" type="button">Quick Log</button>
         <button class="primaryAlt" id="topWizard" type="button">Wizard Log</button>
         <button class="secondary" id="topHistory" type="button">History</button>
       </div>
 
-      <!-- SMALL UTILITIES -->
-      <div class="utilRow">
+      <!-- Utilities (compact) -->
+      <div class="utilRow" style="margin-top:10px;">
         <button class="util" id="copyLatest" type="button">Copy Latest</button>
         <button class="util" id="exportJson" type="button">Export JSON</button>
         <button class="util danger" id="deleteAll" type="button">Delete All</button>
@@ -525,6 +444,7 @@ h1{
     </div>
 
     <!-- SESSION -->
+
     <div class="card" id="sessionCard">
       <div class="rowBetween">
         <div>
@@ -616,20 +536,30 @@ h1{
           </div>
         </div>
 
-        
         <label>Hero Cards</label>
-        <div class="heroFacesRow">
-          <div class="bigCard suit-white" id="qCard1Face">A♠</div>
-          <div class="bigCard suit-white" id="qCard2Face">K♣</div>
-        </div>
-        <div class="heroSelectRow" aria-label="Hero card selection">
-          <select id="qC1Rank"></select>
-          <select id="qC1Suit"></select>
-          <select id="qC2Rank"></select>
-          <select id="qC2Suit"></select>
+        <div class="cardsWrap">
+          <div class="cardPick">
+            <div class="cardLine">
+              <b>Card 1</b>
+              <div class="bigCard suit-white" id="qCard1Face">A♠</div>
+            </div>
+            <div class="grid2">
+              <select id="qC1Rank"></select>
+              <select id="qC1Suit"></select>
+            </div>
+          </div>
+          <div class="cardPick">
+            <div class="cardLine">
+              <b>Card 2</b>
+              <div class="bigCard suit-white" id="qCard2Face">K♣</div>
+            </div>
+            <div class="grid2">
+              <select id="qC2Rank"></select>
+              <select id="qC2Suit"></select>
+            </div>
+          </div>
         </div>
         <div class="pill" style="margin-top:10px;">Shorthand: <b id="qHeroCardsText">AsKc</b></div>
-
       </div>
 
       <div class="subcard">
@@ -729,20 +659,30 @@ h1{
             </div>
           </div>
 
-          
           <label>Hero Cards</label>
-          <div class="heroFacesRow">
-            <div class="bigCard suit-white" id="wCard1Face">A♠</div>
-            <div class="bigCard suit-white" id="wCard2Face">K♣</div>
-          </div>
-          <div class="heroSelectRow" aria-label="Hero card selection">
-            <select id="wC1Rank"></select>
-            <select id="wC1Suit"></select>
-            <select id="wC2Rank"></select>
-            <select id="wC2Suit"></select>
+          <div class="cardsWrap">
+            <div class="cardPick">
+              <div class="cardLine">
+                <b>Card 1</b>
+                <div class="bigCard suit-white" id="wCard1Face">A♠</div>
+              </div>
+              <div class="grid2">
+                <select id="wC1Rank"></select>
+                <select id="wC1Suit"></select>
+              </div>
+            </div>
+            <div class="cardPick">
+              <div class="cardLine">
+                <b>Card 2</b>
+                <div class="bigCard suit-white" id="wCard2Face">K♣</div>
+              </div>
+              <div class="grid2">
+                <select id="wC2Rank"></select>
+                <select id="wC2Suit"></select>
+              </div>
+            </div>
           </div>
           <div class="pill" style="margin-top:10px;">Shorthand: <b id="wHeroCardsText">AsKc</b></div>
-
 
           <div class="subcard">
             <div class="rowBetween">
@@ -827,17 +767,20 @@ h1{
           <div class="pill" id="potPillFlop">Pot: —</div>
         </div>
 
-        
-        <div class="subcard" style="margin-top:10px;">
-          <h3 style="margin:0 0 8px;">Flop Cards</h3>
-          <div class="heroSelectRow" aria-label="Flop cards">
-            <select id="f1Rank"></select><select id="f1Suit"></select>
-            <select id="f2Rank"></select><select id="f2Suit"></select>
-            <select id="f3Rank"></select><select id="f3Suit"></select>
+        <div class="grid3">
+          <div>
+            <label>Flop (e.g., Kd 7s 2c)</label>
+            <input id="flopBoard" placeholder="e.g., Kd 7s 2c" />
           </div>
-          <div class="pill" style="margin-top:10px;">Flop: <b id="flopText">—</b></div>
+          <div>
+            <label>Turn (optional)</label>
+            <input id="turnCard" placeholder="e.g., 9h" />
+          </div>
+          <div>
+            <label>River (optional)</label>
+            <input id="riverCard" placeholder="e.g., 2d" />
+          </div>
         </div>
-
 
         <div class="streetGrid">
           <div>
@@ -913,14 +856,6 @@ h1{
 
         <div id="actionsListTurn" class="list"></div>
 
-        <div class="subcard" style="margin-top:12px;">
-          <h3 style="margin:0 0 8px;">Turn Card</h3>
-          <div class="heroSelectRow" aria-label="Turn card">
-            <select id="tRank"></select><select id="tSuit"></select>
-          </div>
-          <div class="pill" style="margin-top:10px;">Turn: <b id="turnText">—</b></div>
-        </div>
-
         <div class="btns" style="margin-top:12px;">
           <button class="primary" id="nextToRiver" type="button">Next River</button>
         </div>
@@ -964,16 +899,9 @@ h1{
         </div>
 
         <div id="actionsListRiver" class="list"></div>
-        <div class="subcard" style="margin-top:12px;">
-          <h3 style="margin:0 0 8px;">River Card</h3>
-          <div class="heroSelectRow" aria-label="River card">
-            <select id="rRank"></select><select id="rSuit"></select>
-          </div>
-          <div class="pill" style="margin-top:10px;">River: <b id="riverText">—</b></div>
-        </div>
       </div>
 
-      <div class="subcard" id="street_result" style="display:none;"> style="display:none;">
+      <div class="subcard" id="street_result" style="display:none;">
         <div class="rowBetween">
           <div>
             <h3>Result / Reflection</h3>
@@ -1029,35 +957,7 @@ h1{
         <span class="badgeWarn" id="histCount">0 hands</span>
       </div>
 
-      
-      <div class="subcard" id="friendsCard" style="margin-top:10px;">
-        <div class="rowBetween">
-          <div>
-            <h3>Friends</h3>
-            <div class="muted">Add friends once. Then send any hand via SMS from Hand Detail.</div>
-          </div>
-          <span class="badgeWarn" id="friendsCount">0</span>
-        </div>
-
-        <div class="grid3" style="margin-top:10px;">
-          <div>
-            <label>Name</label>
-            <input id="friendName" placeholder="e.g., Mike" />
-          </div>
-          <div>
-            <label>Phone</label>
-            <input id="friendPhone" inputmode="tel" placeholder="e.g., +1 917 555 0123" />
-          </div>
-          <div style="display:flex; align-items:flex-end;">
-            <button class="secondary" id="addFriendBtn" type="button" style="width:100%;">+ Add Friend</button>
-          </div>
-        </div>
-
-        <div id="friendsList" class="list"></div>
-      </div>
-
       <div id="handsList" class="list"></div>
-
 
       <div class="card" id="detailCard" style="display:none; margin-top:12px;">
         <div class="rowBetween">
@@ -1067,12 +967,7 @@ h1{
 
         <div class="btns">
           <button class="secondary" id="copyDetail" type="button">Copy as text</button>
-          
-          <div class="pill" style="display:flex; gap:8px; align-items:center;">
-            <select id="sendFriendSelect" style="width:160px; padding:10px; border-radius:14px; font-size:16px;"></select>
-            <button class="secondary" id="sendToFriend" type="button">Send</button>
-          </div>
-<button class="secondary" id="editHandBtn" type="button">Edit</button>
+          <button class="secondary" id="editHandBtn" type="button">Edit</button>
           <button class="danger" id="deleteOne" type="button">Delete</button>
           <button class="ghost" id="closeDetail" type="button">Close</button>
         </div>
@@ -1131,14 +1026,12 @@ h1{
     return {
       app: { name: "5D", version: "1.0.0" },
       session: { sessionName:"", sessionDate:"", gameType:"NLH", sessionNotes:"" },
-      friends: [],
       hands: []
     };
   }
 
   function migrateOldToNew(old){
     const d = baseState();
-    d.friends = Array.isArray(old.friends) ? old.friends : [];
 
     // Old app stored more in session; keep what’s valid
     d.session.sessionName = old.sessionName || old.session?.sessionName || "";
@@ -1286,114 +1179,6 @@ h1{
     update();
   }
 
-
-  // ---- Board cards (Wizard) ----
-  const RANKS_OPT = ["", ...RANKS]; // "" means not set
-
-  function fillRankSelectOpt(sel, def){
-    sel.innerHTML = RANKS_OPT.map(r => {
-      const label = r === "" ? "—" : r;
-      return `<option value="${r}" ${r===def?"selected":""}>${label}</option>`;
-    }).join("");
-  }
-
-  function fillSuitSelectOpt(sel, def){
-    sel.innerHTML = (["", ...SUITS.map(s=>s.code)]).map(code => {
-      if (code === "") return `<option value="" ${def===""?"selected":""}>—</option>`;
-      const s = suitMeta(code);
-      return `<option value="${code}" ${code===def?"selected":""}>${s.sym}</option>`;
-    }).join("");
-  }
-
-  function cardToken(rank, suit){
-    if (!rank || !suit) return "";
-    return `${rank}${suit}`;
-  }
-
-  function prettyToken(rank, suit){
-    if (!rank || !suit) return "—";
-    return cardPretty(rank, suit);
-  }
-
-  function initBoardSelects(){
-    ["f1","f2","f3"].forEach(p => {
-      fillRankSelectOpt(byId(p+"Rank"), "");
-      fillSuitSelectOpt(byId(p+"Suit"), "");
-      const rerender = () => renderBoardText();
-      byId(p+"Rank").addEventListener("change", rerender);
-      byId(p+"Suit").addEventListener("change", rerender);
-    });
-
-    ["t","r"].forEach(p => {
-      fillRankSelectOpt(byId(p+"Rank"), "");
-      fillSuitSelectOpt(byId(p+"Suit"), "");
-      const rerender = () => renderBoardText();
-      byId(p+"Rank").addEventListener("change", rerender);
-      byId(p+"Suit").addEventListener("change", rerender);
-    });
-
-    renderBoardText();
-  }
-
-  function renderBoardText(){
-    const flop = [
-      prettyToken(byId("f1Rank").value, byId("f1Suit").value),
-      prettyToken(byId("f2Rank").value, byId("f2Suit").value),
-      prettyToken(byId("f3Rank").value, byId("f3Suit").value),
-    ].filter(x => x !== "—").join(" ");
-
-    const turn = prettyToken(byId("tRank").value, byId("tSuit").value);
-    const river = prettyToken(byId("rRank").value, byId("rSuit").value);
-
-    byId("flopText").textContent = flop || "—";
-    byId("turnText").textContent = (turn === "—") ? "—" : turn;
-    byId("riverText").textContent = (river === "—") ? "—" : river;
-  }
-
-  function boardStringsFromSelects(){
-    const flopTokens = [
-      cardToken(byId("f1Rank").value, byId("f1Suit").value),
-      cardToken(byId("f2Rank").value, byId("f2Suit").value),
-      cardToken(byId("f3Rank").value, byId("f3Suit").value),
-    ].filter(Boolean);
-    const flop = flopTokens.join(" ");
-
-    const turn = cardToken(byId("tRank").value, byId("tSuit").value);
-    const river = cardToken(byId("rRank").value, byId("rSuit").value);
-    return { flop, turn, river };
-  }
-
-  function setBoardSelectsFromStrings(board){
-    const flop = (board?.flop || "").trim();
-    const turn = (board?.turn || "").trim();
-    const river = (board?.river || "").trim();
-
-    const flopToks = flop ? flop.split(/\s+/) : [];
-    const f = [flopToks[0]||"", flopToks[1]||"", flopToks[2]||""];
-    [["f1",f[0]],["f2",f[1]],["f3",f[2]]].forEach(([p,tok])=>{
-      byId(p+"Rank").value = tok ? tok[0].toUpperCase() : "";
-      byId(p+"Suit").value = tok ? tok[1].toLowerCase() : "";
-    });
-
-    if (turn){
-      byId("tRank").value = turn[0].toUpperCase();
-      byId("tSuit").value = turn[1].toLowerCase();
-    } else {
-      byId("tRank").value = "";
-      byId("tSuit").value = "";
-    }
-
-    if (river){
-      byId("rRank").value = river[0].toUpperCase();
-      byId("rSuit").value = river[1].toLowerCase();
-    } else {
-      byId("rRank").value = "";
-      byId("rSuit").value = "";
-    }
-
-    renderBoardText();
-  }
-
   // ---- Villains UI ----
   function clearContainer(id){ byId(id).innerHTML = ""; }
 
@@ -1485,7 +1270,7 @@ h1{
     byId("topWizard").className = (view === "wizard") ? "primaryAlt" : "secondary";
     byId("topHistory").className = (view === "history") ? "primary" : "secondary";
 
-    if (view === "history"){ renderHands(); renderFriends(); }
+    if (view === "history") renderHands();
   }
 
   byId("topQuick").onclick = () => showView("quick");
@@ -1493,7 +1278,20 @@ h1{
   byId("topHistory").onclick = () => showView("history");
 
   // ---- Session ----
-  function setSessionPill(){ /* header pill removed for cleaner UI */ }
+  function setSessionPill(){
+    const data = load();
+    const s = data.session || {};
+    /* session pill removed */
+    const pill = null;
+
+    if (!s.sessionName && !s.sessionDate){
+      /*pill.textContent*/ = "No session";
+      return;
+    }
+    const date = s.sessionDate ? ` • ${s.sessionDate}` : "";
+    const game = s.gameType ? ` • ${s.gameType}` : "";
+    /*pill.textContent*/ = `${s.sessionName || "Session"}${date}${game}`;
+  }
 
   function renderSession(){
     const data = load();
@@ -1502,6 +1300,7 @@ h1{
     byId("sessionDate").value = s.sessionDate || "";
     byId("sessionGame").value = s.gameType || "NLH";
     byId("sessionNotes").value = s.sessionNotes || "";
+    setSessionPill();
   }
 
   byId("saveSession").onclick = () => {
@@ -1844,8 +1643,7 @@ h1{
     const s = data.session || {};
     const meta = h.meta || {};
     const game = s.gameType || "NLH";
-    const date = s.sessionDate ? ` (${s.sessionDate})` : "";
-    return `${s.sessionName || "Session"}${date} | ${game} | L${meta.level || "?"} | ${formatBlinds(meta)}`;
+    return `${game} | L${meta.level || "?"} | ${formatBlinds(meta)}`;
   }
 
   function formatHandText(data, h){
@@ -2018,95 +1816,6 @@ h1{
     alert("All hands deleted.");
   };
 
-  
-  // ---- Friends (name + phone) ----
-  function normalizePhone(s){
-    return String(s||"").trim().replace(/[\s\-\(\)]/g,"");
-  }
-
-  function getFriends(){
-    const data = load();
-    return Array.isArray(data.friends) ? data.friends : [];
-  }
-
-  function saveFriends(friends){
-    const data = load();
-    data.friends = friends;
-    save(data);
-  }
-
-  function renderFriends(){
-    const friends = getFriends();
-    byId("friendsCount").textContent = String(friends.length);
-    const list = byId("friendsList");
-    list.innerHTML = "";
-
-    const sel = byId("sendFriendSelect");
-    sel.innerHTML = `<option value="">Send to…</option>` + friends.map((f, i) =>
-      `<option value="${i}">${escapeHtml(f.name || "Friend")} • ${escapeHtml(f.phone || "")}</option>`
-    ).join("");
-
-    if (!friends.length){
-      list.innerHTML = `<div class="muted">No friends yet. Add one above.</div>`;
-      return;
-    }
-
-    friends.forEach((f, idx) => {
-      const div = document.createElement("div");
-      div.className = "item";
-      div.innerHTML = `
-        <div class="rowBetween">
-          <b>${escapeHtml(f.name || "Friend")}</b>
-          <button class="danger" type="button" data-rmf="${idx}">Remove</button>
-        </div>
-        <div class="muted" style="margin-top:6px;">${escapeHtml(f.phone || "")}</div>
-      `;
-      div.querySelector(`[data-rmf="${idx}"]`).onclick = () => {
-        const next = getFriends().filter((_, i) => i !== idx);
-        saveFriends(next);
-        renderFriends();
-      };
-      list.appendChild(div);
-    });
-  }
-
-  byId("addFriendBtn").onclick = () => {
-    const name = byId("friendName").value.trim();
-    const phone = normalizePhone(byId("friendPhone").value);
-    if (!name || !phone) return alert("Enter friend name + phone.");
-    const friends = getFriends();
-    friends.push({ name, phone });
-    saveFriends(friends);
-    byId("friendName").value = "";
-    byId("friendPhone").value = "";
-    renderFriends();
-  };
-
-  function buildSmsLink(phone, body){
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    const enc = encodeURIComponent(body);
-    return isIOS ? `sms:${phone}&body=${enc}` : `sms:${phone}?body=${enc}`;
-  }
-
-  byId("sendToFriend").onclick = () => {
-    const idx = byId("sendFriendSelect").value;
-    if (idx === "") return alert("Pick a friend first.");
-    const friends = getFriends();
-    const f = friends[Number(idx)];
-    if (!f) return alert("Friend not found.");
-
-    const id = byId("detailCard").dataset.id;
-    if (!id) return alert("Open a hand first (History → tap a hand).");
-
-    const data = load();
-    const h = (data.hands || []).find(x => x.id === id);
-    if (!h) return alert("Hand not found.");
-
-    const text = formatHandText(data, h);
-    const link = buildSmsLink(f.phone, text);
-    window.location.href = link;
-  };
-
   // ---- Quick save ----
   byId("qAddVillainBtn").onclick = () => addVillainRow("qVillainsList", { pos:"BB", stackBb:"", note:"" });
   byId("qClear").onclick = resetQuick;
@@ -2209,8 +1918,9 @@ h1{
       if (byId(listId)) byId(listId).innerHTML = `<div class="muted">No actions yet.</div>`;
     });
 
-    // board selects reset
-    setBoardSelectsFromStrings({ flop:"", turn:"", river:"" });
+    byId("flopBoard").value = "";
+    byId("turnCard").value = "";
+    byId("riverCard").value = "";
     byId("wResult").value = "Won";
     byId("wShowdown").value = "no";
     byId("wNetBb").value = "";
@@ -2321,7 +2031,9 @@ h1{
       byId("wizStatus").className = "badgeOk";
 
       // boards
-      setBoardSelectsFromStrings({ flop: h.wizard.board?.flop || "", turn: h.wizard.board?.turn || "", river: h.wizard.board?.river || "" });
+      byId("flopBoard").value = h.wizard.board?.flop || "";
+      byId("turnCard").value = h.wizard.board?.turn || "";
+      byId("riverCard").value = h.wizard.board?.river || "";
 
       // result
       byId("wResult").value = h.wizard.result?.result || h.result || "Won";
@@ -2380,11 +2092,10 @@ h1{
   byId("saveWizardHand").onclick = () => {
     if (!wizActive) return alert("Start a wizard hand first.");
 
-    // board (dropdowns)
-    const b = boardStringsFromSelects();
-    wizActive.hand.wizard.board.flop = b.flop;
-    wizActive.hand.wizard.board.turn = b.turn;
-    wizActive.hand.wizard.board.river = b.river;
+    // board
+    wizActive.hand.wizard.board.flop = byId("flopBoard").value.trim();
+    wizActive.hand.wizard.board.turn = byId("turnCard").value.trim();
+    wizActive.hand.wizard.board.river = byId("riverCard").value.trim();
 
     // result
     wizActive.hand.wizard.result.result = byId("wResult").value;
@@ -2438,9 +2149,6 @@ h1{
     initHeroCards("q");
     initHeroCards("w");
 
-    // wizard board selects
-    initBoardSelects();
-
     // villains defaults
     resetQuick();
     clearContainer("wVillainsList");
@@ -2451,6 +2159,7 @@ h1{
 
     // show quick by default
     showView("quick");
+    setSessionPill();
   }
 
   // ---- History/Detail controls wired earlier ----
