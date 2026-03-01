@@ -23,6 +23,14 @@
   <link rel="icon" href="icons/icon-192.png" />
 
   <style>
+    .flash{ box-shadow: 0 0 0 2px rgba(99,102,241,0.55); }
+
+    .actionRow3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; align-items:end; }
+    @media (max-width: 430px){
+      .streetGrid{ grid-template-columns: 1.1fr 1fr 1fr; gap:8px; }
+      .streetGrid select{ padding:10px 10px; }
+ .actionRow3{ gap:8px; } }
+
 
     .grid2tight{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
     .blinds3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; align-items:end; }
@@ -1967,30 +1975,40 @@ h1{
   }
 
   function fillAmountSelectForStreet(street){
-    if (!wizActive) return;
+    const amtId      = {preflop:"actToBbPre",flop:"actToBbFlop",turn:"actToBbTurn",river:"actToBbRiver"}[street];
     const actorSelId = {preflop:"actActorPre",flop:"actActorFlop",turn:"actActorTurn",river:"actActorRiver"}[street];
     const typeSelId  = {preflop:"actTypePre",flop:"actTypeFlop",turn:"actTypeTurn",river:"actTypeRiver"}[street];
-    const amtId      = {preflop:"actToBbPre",flop:"actToBbFlop",turn:"actToBbTurn",river:"actToBbRiver"}[street];
 
-    const actorId = byId(actorSelId)?.value;
-    const type = byId(typeSelId)?.value;
     const sel = byId(amtId);
     if (!sel) return;
 
-    const state = calcStateForStreet(wizActive.hand, street);
-    const actor = state.players.find(p=>p.id===actorId);
-    const total = state.contribTotal?.[actorId] ?? 0;
-    const remainingBb = state.bb ? Math.max(0, ((actor?.stackChips ?? 0) - total) / state.bb) : 0;
-
-    // we populate "to total this street" amounts for BET/RAISE; for others keep empty
-    if (type !== "BET" && type !== "RAISE" && type !== "JAM"){
+    const type = byId(typeSelId)?.value || "";
+    // Only meaningful for BET/RAISE; otherwise keep a placeholder
+    if (type !== "BET" && type !== "RAISE"){
       sel.innerHTML = `<option value="">—</option>`;
       return;
     }
 
+    // If no active hand yet, still show generic options so UI feels alive
+    if (!wizActive){
+      const opts = [`<option value="">Select (to bb)</option>`];
+      for (let v = 0.5; v <= 50; v += 0.5){
+        const vv = Math.round(v*10)/10;
+        opts.push(`<option value="${vv}">${vv.toFixed(1)} bb</option>`);
+      }
+      sel.innerHTML = opts.join("");
+      return;
+    }
+
+    const actorId = byId(actorSelId)?.value;
+    const state = calcStateForStreet(wizActive.hand, street);
+    const actor = state.players.find(p=>p.id===actorId);
+
+    const total = state.contribTotal?.[actorId] ?? 0;
+    const remainingBb = state.bb ? Math.max(0, ((actor?.stackChips ?? 0) - total) / state.bb) : 0;
     const currentStreetInvestBb = state.bb ? ((state.contribThisStreet?.[actorId] ?? 0) / state.bb) : 0;
-    // Allow selecting up to current + remaining
-    const maxTo = currentStreetInvestBb + remainingBb;
+
+    const maxTo = Math.max(0.5, currentStreetInvestBb + remainingBb);
     const step = 0.5;
 
     const opts = [];
@@ -2323,7 +2341,7 @@ function addWizardAction(street, actorSelId, typeSelId, toInputId){
     byId("detailCard").style.display = "";
     byId("detailCard").dataset.id = id;
 
-    byId("detailMetaPill").textContent = `L${h.meta?.level || "?"} • ${formatBlinds(h.meta||{sb:0,bb:0,bbAnte:0})}`;
+    byId("detailMetaPill").textContent = `${(h.session?.sessionName || data.session?.sessionName || "").trim() ? (h.session?.sessionName || data.session?.sessionName) + " • " : ""}${(h.session?.sessionDate || data.session?.sessionDate) ? (h.session?.sessionDate || data.session?.sessionDate) + " • " : ""}${h.session?.gameType || data.session?.gameType || ""} • L${h.meta?.level || "?"} • ${formatBlinds(h.meta||{sb:0,bb:0,bbAnte:0})}`.replace(/^ • /,"").replace(/ • $/,"");
 
     byId("detailCard").scrollIntoView({ behavior:"smooth", block:"start" });
   }
@@ -2593,10 +2611,40 @@ function addWizardAction(street, actorSelId, typeSelId, toInputId){
     byId("wNetBb").value = "";
     byId("wReflection").value = "";
 
+
+    // clear meta inputs
+    byId("wLevel").value = "1";
+    byId("wSb").value = "200";
+    byId("wBb").value = "400";
+    fillAnteSelect(byId("wAnte"), Number(byId("wBb").value), 0);
+
+    byId("wHeroPos").value = "BTN";
+    byId("wHeroStack").value = "";
+    byId("wC1Rank").value = "";
+    byId("wC1Suit").value = "";
+    byId("wC2Rank").value = "";
+    byId("wC2Suit").value = "";
+    renderHeroCardsText("w");
+
+    // clear villains list
+    clearContainer("wVillainsList");
+
+    // reset action builder inputs
+    ["Pre","Flop","Turn","River"].forEach(suffix=>{
+      const actor = byId("actActor"+suffix);
+      const type = byId("actType"+suffix);
+      const to = byId("actToBb"+suffix);
+      if (actor) actor.selectedIndex = 0;
+      if (type) type.value = "FOLD";
+      if (to) to.innerHTML = `<option value="">Select (to bb)</option>`;
+    });
+
     switchWizardTab("preflop");
   }
 
   byId("wReset").onclick = () => {
+    const btn = byId("wReset");
+    if (btn){ btn.classList.add("flash"); setTimeout(()=>btn.classList.remove("flash"), 220); }
     editingHandId = null;
     resetWizardUI();
   };
