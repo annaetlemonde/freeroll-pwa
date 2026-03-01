@@ -1,7 +1,7 @@
 // sw.js — 5D PWA
 // IMPORTANT: bump CACHE_NAME every time you update index.html
 
-const CACHE_NAME = "5d-cache-v44";
+const CACHE_NAME = "5d-cache-v45";
 
 const ASSETS = [
   "./",
