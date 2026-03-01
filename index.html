@@ -75,12 +75,8 @@
       top: 0;
       z-index: 30;
       padding: 14px 0 10px;
-      /* Blend into background — no rigid slab */
-      background:
-        radial-gradient(700px 240px at 20% 0%, rgba(110,168,255,0.16), transparent 60%),
-        radial-gradient(620px 220px at 85% 5%, rgba(168,85,247,0.12), transparent 55%),
-        linear-gradient(180deg, rgba(3,6,12,0.82), rgba(3,6,12,0.25), rgba(3,6,12,0));
-      backdrop-filter: blur(16px);
+      background: transparent; /* seamless with page background */
+      backdrop-filter: none;
       border-bottom: 1px solid rgba(255,255,255,0.05);
       margin-bottom: 8px;
     }
@@ -135,6 +131,7 @@
       -webkit-overflow-scrolling: touch;
       padding-bottom: 2px;
     }
+    .subcard .heroSelectRow{ max-width:100%; }
     .heroSelectRow select{
       flex: 0 0 auto;
       width: 92px;
@@ -399,10 +396,10 @@ h1{
       user-select: none;
     }
     .tab.active{
-      color: var(--text);
-      border-color: rgba(110,168,255,0.45);
-      background: rgba(110,168,255,0.12);
-      box-shadow: 0 0 0 4px rgba(110,168,255,0.08);
+      color: #05070d;
+      border-color: rgba(255,255,255,0.16);
+      background: linear-gradient(90deg, var(--accentA), var(--accentB));
+      box-shadow: 0 0 0 4px rgba(110,168,255,0.16);
     }
 
     .streetGrid{
@@ -423,6 +420,13 @@ h1{
       color: rgba(220,255,235,0.95);
       font-size: 12px;
       white-space: nowrap;
+    }
+
+    .btnActive{
+      background: linear-gradient(90deg, rgba(110,168,255,0.92), rgba(168,85,247,0.80));
+      border-color: rgba(255,255,255,0.18);
+      color:#05070d;
+      box-shadow: 0 0 0 4px rgba(110,168,255,0.14);
     }
 
     .badgeWarn{
@@ -471,6 +475,11 @@ h1{
         <button class="primary" id="topQuick" type="button">Quick Log</button>
         <button class="primaryAlt" id="topWizard" type="button">Wizard Log</button>
         <button class="secondary" id="topHistory" type="button">History</button>
+      </div>
+
+      <!-- Friends tab (own row) -->
+      <div class="modeRow" style="margin-top:10px;">
+        <button class="secondary" id="topFriends" type="button">Add Friends</button>
       </div>
 
       <!-- Utilities (compact) -->
@@ -613,10 +622,29 @@ h1{
       </div>
 
       <div class="grid3">
+        
         <div>
           <label>Board (optional)</label>
-          <input id="qBoard" placeholder="e.g., Js 8d 2c | Qh | 2s" />
+          <div class="subcard" style="margin-top:6px;">
+            <div class="muted" style="margin-bottom:8px;">Select up to 5 cards (flop/turn/river)</div>
+            <div class="heroSelectRow" aria-label="Board ranks">
+              <select id="qB1Rank"></select>
+              <select id="qB2Rank"></select>
+              <select id="qB3Rank"></select>
+              <select id="qB4Rank"></select>
+              <select id="qB5Rank"></select>
+            </div>
+            <div class="heroSelectRow" aria-label="Board suits" style="margin-top:8px;">
+              <select id="qB1Suit"></select>
+              <select id="qB2Suit"></select>
+              <select id="qB3Suit"></select>
+              <select id="qB4Suit"></select>
+              <select id="qB5Suit"></select>
+            </div>
+            <div class="pill" style="margin-top:10px;">Board: <b id="qBoardText">—</b></div>
+          </div>
         </div>
+
         <div>
           <label>Pot Size (bb, optional)</label>
           <input id="qPotBb" inputmode="decimal" placeholder="e.g., 18" />
@@ -977,26 +1005,19 @@ h1{
       </div>
     </div>
 
-    <!-- HISTORY -->
-    <div id="historyCard" class="card" style="display:none;">
+    
+    <!-- FRIENDS -->
+    <div id="friendsTabCard" class="card" style="display:none;">
       <div class="rowBetween">
         <div>
-          <h2>History</h2>
-          <div class="muted">Newest first. Each hand keeps its own level/blinds.</div>
+          <h2>Friends</h2>
+          <div class="muted">Add friends once. Then send any hand via SMS from Hand Detail in History.</div>
         </div>
-        <span class="badgeWarn" id="histCount">0 hands</span>
+        <span class="badgeWarn" id="friendsCount">0</span>
       </div>
 
-      
-      <div class="subcard" id="friendsCard" style="margin-top:10px;">
-        <div class="rowBetween">
-          <div>
-            <h3>Friends</h3>
-            <div class="muted">Add friends once. Then send any hand via SMS from Hand Detail.</div>
-          </div>
-          <span class="badgeWarn" id="friendsCount">0</span>
-        </div>
-
+      <div class="subcard" style="margin-top:10px;">
+        <h3>Add Friends</h3>
         <div class="grid3" style="margin-top:10px;">
           <div>
             <label>Name</label>
@@ -1010,10 +1031,20 @@ h1{
             <button class="secondary" id="addFriendBtn" type="button" style="width:100%;">+ Add Friend</button>
           </div>
         </div>
-
-        <div id="friendsList" class="list"></div>
       </div>
 
+      <div id="friendsList" class="list" style="margin-top:10px;"></div>
+    </div>
+
+<!-- HISTORY -->
+    <div id="historyCard" class="card" style="display:none;">
+      <div class="rowBetween">
+        <div>
+          <h2>History</h2>
+          <div class="muted">Newest first. Each hand keeps its own level/blinds.</div>
+        </div>
+        <span class="badgeWarn" id="histCount">0 hands</span>
+      </div>
       <div id="handsList" class="list"></div>
 
 
@@ -1352,6 +1383,50 @@ h1{
     renderBoardText();
   }
 
+  // ---- Quick Log board dropdowns (5 cards) ----
+  function initQuickBoardSelects(){
+    for (let i=1;i<=5;i++){
+      fillRankSelectOpt(byId("qB"+i+"Rank"), "");
+      fillSuitSelectOpt(byId("qB"+i+"Suit"), "");
+      const rerender = () => renderQuickBoardText();
+      byId("qB"+i+"Rank").addEventListener("change", rerender);
+      byId("qB"+i+"Suit").addEventListener("change", rerender);
+    }
+    renderQuickBoardText();
+  }
+
+  function renderQuickBoardText(){
+    const toks = [];
+    for (let i=1;i<=5;i++){
+      const r = byId("qB"+i+"Rank").value;
+      const s = byId("qB"+i+"Suit").value;
+      const pretty = prettyToken(r, s);
+      if (pretty !== "—") toks.push(pretty);
+    }
+    byId("qBoardText").textContent = toks.length ? toks.join(" ") : "—";
+  }
+
+  function quickBoardStringFromSelects(){
+    const toks = [];
+    for (let i=1;i<=5;i++){
+      const r = byId("qB"+i+"Rank").value;
+      const s = byId("qB"+i+"Suit").value;
+      const tok = cardToken(r, s);
+      if (tok) toks.push(tok);
+    }
+    return toks.join(" ");
+  }
+
+  function setQuickBoardSelectsFromString(boardStr){
+    const toks = String(boardStr || "").trim() ? String(boardStr).trim().split(/\s+/) : [];
+    for (let i=1;i<=5;i++){
+      const tok = toks[i-1] || "";
+      byId("qB"+i+"Rank").value = tok ? tok[0].toUpperCase() : "";
+      byId("qB"+i+"Suit").value = tok ? tok[1].toLowerCase() : "";
+    }
+    renderQuickBoardText();
+  }
+
   // ---- Villains UI ----
   function clearContainer(id){ byId(id).innerHTML = ""; }
 
@@ -1438,19 +1513,33 @@ h1{
     byId("quickCard").style.display = (view === "quick") ? "" : "none";
     byId("wizardCard").style.display = (view === "wizard") ? "" : "none";
     byId("historyCard").style.display = (view === "history") ? "" : "none";
+    byId("friendsTabCard").style.display = (view === "friends") ? "" : "none";
 
-    byId("topQuick").className = (view === "quick") ? "primary" : "secondary";
-    byId("topWizard").className = (view === "wizard") ? "primaryAlt" : "secondary";
-    byId("topHistory").className = (view === "history") ? "primary" : "secondary";
+    // Hide Session card on History + Friends (per spec)
+    byId("sessionCard").style.display = (view === "history" || view === "friends") ? "none" : "";
 
-    if (view === "history"){ renderHands(); renderFriends(); }
+    // Active states (make obvious)
+    byId("topQuick").className = (view === "quick") ? "primary btnActive" : "secondary";
+    byId("topWizard").className = (view === "wizard") ? "primaryAlt btnActive" : "secondary";
+    byId("topHistory").className = (view === "history") ? "secondary btnActive" : "secondary";
+    byId("topFriends").className = (view === "friends") ? "secondary btnActive" : "secondary";
+
+    if (view === "history"){
+      renderHands();
+      renderFriends(); // populate Send-to dropdown
+    }
+    if (view === "friends"){
+      renderFriends();
+    }
   }
 
   byId("topQuick").onclick = () => showView("quick");
   byId("topWizard").onclick = () => showView("wizard");
   byId("topHistory").onclick = () => showView("history");
 
-  // ---- Session ----
+  
+  byId("topFriends").onclick = () => showView("friends");
+// ---- Session ----
   function setSessionPill(){ /* header pill removed for cleaner UI */ }
 
   function renderSession(){
@@ -1491,7 +1580,7 @@ h1{
     byId("qHeroStack").value = "";
     byId("qPreflop").value = "";
     byId("qPostflop").value = "";
-    byId("qBoard").value = "";
+    setQuickBoardSelectsFromString("");
     byId("qPotBb").value = "";
     byId("qTurningPoint").value = "";
     byId("quickEditHint").style.display = "none";
@@ -2088,7 +2177,7 @@ h1{
     const q = h.quick || {};
     byId("qPreflop").value = q.preflop || "";
     byId("qPostflop").value = q.postflop || "";
-    byId("qBoard").value = q.board || "";
+    setQuickBoardSelectsFromString(q.board || "");
     byId("qPotBb").value = q.potBb || "";
     byId("qTurningPoint").value = h.turningPoint || "";
 
@@ -2126,7 +2215,7 @@ h1{
       quick: {
         preflop: byId("qPreflop").value,
         postflop: byId("qPostflop").value,
-        board: byId("qBoard").value.trim(),
+        board: quickBoardStringFromSelects(),
         potBb: byId("qPotBb").value.trim()
       },
       result: byId("qResult").value,
@@ -2398,7 +2487,10 @@ h1{
     // wizard board selects
     initBoardSelects();
 
-    // villains defaults
+    
+    // quick board selects
+    initQuickBoardSelects();
+// villains defaults
     resetQuick();
     clearContainer("wVillainsList");
     addVillainRow("wVillainsList", { pos:"BB", stackBb:"", note:"" });
