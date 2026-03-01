@@ -1615,7 +1615,8 @@ h1{
   byId("topHistory").onclick = () => showView("history");
 
   
-  byId("topFriends").onclick = () => showView("fri
+  byId("topFriends").onclick = () => showView("friends");
+
   function refreshSessionSelect(){
     const data = load();
     const list = Array.isArray(data.savedSessions) ? data.savedSessions : [];
@@ -1667,7 +1668,6 @@ h1{
     save(data);
   });
 
-ends");
 // ---- Session ----
   function setSessionPill(){ /* header pill removed for cleaner UI */ }
 
