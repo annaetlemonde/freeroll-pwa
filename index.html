@@ -23,6 +23,16 @@
   <link rel="icon" href="icons/icon-192.png" />
 
   <style>
+
+    .grid2tight{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    .blinds3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; align-items:end; }
+    .miniLbl{ font-size:12px; color: rgba(255,255,255,0.65); margin-bottom:6px; display:block; }
+    @media (max-width: 430px){
+      .grid2tight{ gap:8px; }
+      .blinds3{ gap:6px; }
+      .grid2tight select, .grid2tight input, .blinds3 select, .blinds3 input{ padding:10px 10px; }
+    }
+
     .stackSummary{ margin-top:10px; }
     .stackSummary *{ pointer-events: auto; }
 
@@ -544,7 +554,7 @@ h1{
       </div>
 
       <div id="sessionBody">
-        <div class="grid2" style="margin-top:10px;">
+        <div class="grid2tight" style="margin-top:10px;">
           <div>
             <label>Select Saved Session</label>
             <select id="sessionSelect"></select>
@@ -614,7 +624,7 @@ h1{
           </div>
         </div>
 
-        <div class="grid2" style="margin-top:10px;">
+        <div class="grid2tight" style="margin-top:10px;">
           <div>
             <label>Hero Position</label>
             <select id="qHeroPos"></select>
@@ -664,7 +674,7 @@ h1{
         <div id="qVillainsList" class="list"></div>
       </div>
 
-      <div class="grid2" style="margin-top:10px;">
+      <div class="grid2tight" style="margin-top:10px;">
         <div>
           <label>Preflop (quick text)</label>
           <textarea id="qPreflop" placeholder="Hero opens 2.2bb, CO calls, BB 3bets 8bb, Hero calls..."></textarea>
@@ -764,7 +774,7 @@ h1{
             </div>
           </div>
 
-          <div class="grid2" style="margin-top:10px;">
+          <div class="grid2tight" style="margin-top:10px;">
             <div>
               <label>Hero Position</label>
               <select id="wHeroPos"></select>
