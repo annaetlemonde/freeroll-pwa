@@ -23,6 +23,8 @@
   <link rel="icon" href="icons/icon-192.png" />
 
   <style>
+    .disabledInput{ opacity:0.55; }
+
     .flash{ box-shadow: 0 0 0 2px rgba(99,102,241,0.55); }
 
     .actionRow3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; align-items:end; }
@@ -849,24 +851,19 @@ h1{
 
         <div class="subcard stackSummary" id="stackSummaryPre"></div>
 
-        <div class="streetGrid">
-          <div>
-            <label>Actor</label>
-            <select id="actActorPre"></select>
-          </div>
-          <div>
-            <label>Action</label>
-            <select id="actTypePre">
-              <option value="FOLD">Fold</option>
-              <option value="CHECK">Check</option>
-              <option value="CALL">Call</option>
-              <option value="BET">Bet</option>
-              <option value="RAISE">Raise</option>
-            </select>
-          </div>
-          <div>
-            <label>Bet/Raise To (bb)</label>
-            <select class="amountSelect" id="actToBbPre"></select>
+        <div class="actionRow3">
+            <div>
+              <label>Actor</label>
+              <select id="actActorPre"></select>
+            </div>
+            <div>
+              <label>Action</label>
+              <select id="actTypePre"></select>
+            </div>
+            <div>
+              <label>Bet / Raise to (BB)</label>
+              <input id="actToBbPre" inputmode="decimal" placeholder="e.g., 6.5" />
+            </div>
           </div>
         </div>
 
@@ -906,24 +903,19 @@ h1{
         </div>
 
 
-        <div class="streetGrid">
-          <div>
-            <label>Actor</label>
-            <select id="actActorFlop"></select>
-          </div>
-          <div>
-            <label>Action</label>
-            <select id="actTypeFlop">
-              <option value="FOLD">Fold</option>
-              <option value="CHECK">Check</option>
-              <option value="CALL">Call</option>
-              <option value="BET">Bet</option>
-              <option value="RAISE">Raise</option>
-            </select>
-          </div>
-          <div>
-            <label>Bet/Raise To (bb)</label>
-            <select class="amountSelect" id="actToBbFlop"></select>
+        <div class="actionRow3">
+            <div>
+              <label>Actor</label>
+              <select id="actActorFlop"></select>
+            </div>
+            <div>
+              <label>Action</label>
+              <select id="actTypeFlop"></select>
+            </div>
+            <div>
+              <label>Bet / Raise to (BB)</label>
+              <input id="actToBbFlop" inputmode="decimal" placeholder="e.g., 6.5" />
+            </div>
           </div>
         </div>
 
@@ -951,24 +943,19 @@ h1{
 
         <div class="subcard stackSummary" id="stackSummaryTurn"></div>
 
-        <div class="streetGrid">
-          <div>
-            <label>Actor</label>
-            <select id="actActorTurn"></select>
-          </div>
-          <div>
-            <label>Action</label>
-            <select id="actTypeTurn">
-              <option value="FOLD">Fold</option>
-              <option value="CHECK">Check</option>
-              <option value="CALL">Call</option>
-              <option value="BET">Bet</option>
-              <option value="RAISE">Raise</option>
-            </select>
-          </div>
-          <div>
-            <label>Bet/Raise To (bb)</label>
-            <select class="amountSelect" id="actToBbTurn"></select>
+        <div class="actionRow3">
+            <div>
+              <label>Actor</label>
+              <select id="actActorTurn"></select>
+            </div>
+            <div>
+              <label>Action</label>
+              <select id="actTypeTurn"></select>
+            </div>
+            <div>
+              <label>Bet / Raise to (BB)</label>
+              <input id="actToBbTurn" inputmode="decimal" placeholder="e.g., 6.5" />
+            </div>
           </div>
         </div>
 
@@ -1004,24 +991,19 @@ h1{
 
         <div class="subcard stackSummary" id="stackSummaryRiver"></div>
 
-        <div class="streetGrid">
-          <div>
-            <label>Actor</label>
-            <select id="actActorRiver"></select>
-          </div>
-          <div>
-            <label>Action</label>
-            <select id="actTypeRiver">
-              <option value="FOLD">Fold</option>
-              <option value="CHECK">Check</option>
-              <option value="CALL">Call</option>
-              <option value="BET">Bet</option>
-              <option value="RAISE">Raise</option>
-            </select>
-          </div>
-          <div>
-            <label>Bet/Raise To (bb)</label>
-            <select class="amountSelect" id="actToBbRiver"></select>
+        <div class="actionRow3">
+            <div>
+              <label>Actor</label>
+              <select id="actActorRiver"></select>
+            </div>
+            <div>
+              <label>Action</label>
+              <select id="actTypeRiver"></select>
+            </div>
+            <div>
+              <label>Bet / Raise to (BB)</label>
+              <input id="actToBbRiver" inputmode="decimal" placeholder="e.g., 6.5" />
+            </div>
           </div>
         </div>
 
@@ -1979,45 +1961,33 @@ h1{
     const actorSelId = {preflop:"actActorPre",flop:"actActorFlop",turn:"actActorTurn",river:"actActorRiver"}[street];
     const typeSelId  = {preflop:"actTypePre",flop:"actTypeFlop",turn:"actTypeTurn",river:"actTypeRiver"}[street];
 
-    const sel = byId(amtId);
-    if (!sel) return;
+    const inp = byId(amtId);
+    if (!inp) return;
 
     const type = byId(typeSelId)?.value || "";
-    // Only meaningful for BET/RAISE; otherwise keep a placeholder
     if (type !== "BET" && type !== "RAISE"){
-      sel.innerHTML = `<option value="">—</option>`;
+      inp.value = "";
+      inp.placeholder = "—";
+      inp.disabled = true;
+      inp.classList.add("disabledInput");
       return;
     }
+    inp.disabled = false;
+    inp.classList.remove("disabledInput");
 
-    // If no active hand yet, still show generic options so UI feels alive
+    // Provide a helpful placeholder based on remaining stack
     if (!wizActive){
-      const opts = [`<option value="">Select (to bb)</option>`];
-      for (let v = 0.5; v <= 50; v += 0.5){
-        const vv = Math.round(v*10)/10;
-        opts.push(`<option value="${vv}">${vv.toFixed(1)} bb</option>`);
-      }
-      sel.innerHTML = opts.join("");
+      inp.placeholder = "e.g., 6.5";
       return;
     }
-
     const actorId = byId(actorSelId)?.value;
     const state = calcStateForStreet(wizActive.hand, street);
     const actor = state.players.find(p=>p.id===actorId);
-
     const total = state.contribTotal?.[actorId] ?? 0;
     const remainingBb = state.bb ? Math.max(0, ((actor?.stackChips ?? 0) - total) / state.bb) : 0;
     const currentStreetInvestBb = state.bb ? ((state.contribThisStreet?.[actorId] ?? 0) / state.bb) : 0;
-
     const maxTo = Math.max(0.5, currentStreetInvestBb + remainingBb);
-    const step = 0.5;
-
-    const opts = [];
-    opts.push(`<option value="">Select (to bb)</option>`);
-    for (let v = step; v <= maxTo + 1e-9; v += step){
-      const vv = Math.round(v*10)/10;
-      opts.push(`<option value="${vv}">${vv.toFixed(1)} bb</option>`);
-    }
-    sel.innerHTML = opts.join("");
+    inp.placeholder = `≤ ${maxTo.toFixed(1)} bb`;
   }
 }
 
