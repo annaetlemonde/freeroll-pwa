@@ -548,6 +548,7 @@ h1{
       <div class="utilRow" style="margin-top:10px;">
         <button class="util" id="copyLatest" type="button">Copy Latest</button>
         <button class="util" id="exportJson" type="button">Export JSON</button>
+        <button class="util" id="refreshApp" type="button">Refresh App</button>
         <button class="util danger" id="deleteAll" type="button">Delete All</button>
       </div>
     </div>
@@ -2370,6 +2371,22 @@ function addWizardAction(street, actorSelId, typeSelId, toInputId){
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  byId("refreshApp").onclick = async () => {
+    // Clears service worker + caches, then reloads
+    try{
+      if ("serviceWorker" in navigator){
+        const regs = await navigator.serviceWorker.getRegistrations();
+        for (const r of regs) await r.unregister();
+      }
+      if ("caches" in window){
+        const keys = await caches.keys();
+        for (const k of keys) await caches.delete(k);
+      }
+    }catch(e){ /* ignore */ }
+    location.reload(true);
+  };
+
 
   byId("deleteAll").onclick = () => {
     if (!confirm("Delete ALL hands? This cannot be undone.")) return;
