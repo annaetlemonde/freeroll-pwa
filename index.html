@@ -36,7 +36,7 @@
       .grid2tight select, .grid2tight input, .blinds3 select, .blinds3 input{ padding:10px 10px; }
     }
 
-    .stackSummary{ margin-top:10px; }
+    .stackSummary{ margin-top:10px; display:none; }
     .stackSummary *{ pointer-events: auto; }
 
     .blindsInline{ grid-template-columns: 1fr 1fr !important; gap:10px !important; }
@@ -204,6 +204,15 @@ h1{
       font-size: 12px;
       color: var(--muted);
       white-space: nowrap;
+    }
+
+    .pill.potPill{
+      padding: 8px 12px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.86);
+      background: rgba(110,168,255,0.12);
+      border: 1px solid rgba(110,168,255,0.32);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.35);
     }
 
     .modeRow{
@@ -844,7 +853,7 @@ h1{
             <h3>Preflop Actions</h3>
             <div class="muted">Add actions in order. Raise sequences supported.</div>
           </div>
-          <div class="pill" id="potPillPre">Pot: —</div>
+          <div class="pill potPill" id="potPillPre">Pot: —</div>
         </div>
 
         <div class="subcard stackSummary" id="stackSummaryPre"></div>
@@ -894,7 +903,7 @@ h1{
             <h3>Flop</h3>
             <div class="muted">Board + actions.</div>
           </div>
-          <div class="pill" id="potPillFlop">Pot: —</div>
+          <div class="pill potPill" id="potPillFlop">Pot: —</div>
         </div>
 
         <div class="subcard stackSummary" id="stackSummaryFlop"></div>
@@ -956,7 +965,7 @@ h1{
             <h3>Turn Actions</h3>
             <div class="muted">Actions on turn.</div>
           </div>
-          <div class="pill" id="potPillTurn">Pot: —</div>
+          <div class="pill potPill" id="potPillTurn">Pot: —</div>
         </div>
 
         <div class="subcard stackSummary" id="stackSummaryTurn"></div>
@@ -1014,7 +1023,7 @@ h1{
             <h3>River Actions</h3>
             <div class="muted">Actions on river.</div>
           </div>
-          <div class="pill" id="potPillRiver">Pot: —</div>
+          <div class="pill potPill" id="potPillRiver">Pot: —</div>
         </div>
 
         <div class="subcard stackSummary" id="stackSummaryRiver"></div>
@@ -1072,7 +1081,7 @@ h1{
             <h3>Result / Reflection</h3>
             <div class="muted">End the hand and capture the key thought.</div>
           </div>
-          <div class="pill" id="potPillResult">Pot: —</div>
+          <div class="pill potPill" id="potPillResult">Pot: —</div>
         </div>
 
         <div class="subcard stackSummary" id="stackSummaryResult"></div>
@@ -2132,7 +2141,6 @@ h1{
         </div>
       </div>
       <div class="miniBtns">
-        <button class="secondary mini" type="button" data-role="log">Add Action</button>
         <button class="ghost mini" type="button" data-role="remove">Remove</button>
       </div>
     `;
@@ -2150,13 +2158,6 @@ h1{
     updateEntryRowAmountUI(wrap);
 
     wrap.querySelector('[data-role="remove"]').onclick = ()=> wrap.remove();
-    wrap.querySelector('[data-role="log"]').onclick = ()=>{
-      const actorId = actorSel?.value || "";
-      const type = typeSel?.value || "";
-      const toBb = amtInp?.value || "";
-      const ok = addWizardActionValues(street, actorId, type, toBb, ()=>{});
-      if (ok) wrap.remove();
-    };
 
     host.appendChild(wrap);
   }
@@ -2267,6 +2268,22 @@ function addWizardActionValues(street, actorId, type, toBb, afterSuccess){
     return true;
   }
 
+  function addWizardActionSmart(street, suffix, actorSelId, typeSelId, toInputId){
+    // If the user has queued extra action rows, log the earliest queued row first (FIFO)
+    const host = byId("extraEntries" + suffix);
+    const row = host ? host.querySelector(".miniActionEntry") : null;
+    if (row){
+      const actorId = row.querySelector('select[data-role="actor"]')?.value || "";
+      const type = row.querySelector('select[data-role="type"]')?.value || "";
+      const toBb = row.querySelector('input[data-role="toBb"]')?.value || "";
+      const ok = addWizardActionValues(street, actorId, type, toBb, () => {
+        row.remove();
+      });
+      return ok;
+    }
+    return addWizardAction(street, actorSelId, typeSelId, toInputId);
+  }
+
   function addWizardAction(street, actorSelId, typeSelId, toInputId){
     const actorId = byId(actorSelId).value;
     const type = byId(typeSelId).value;
@@ -2331,13 +2348,38 @@ function addWizardActionValues(street, actorId, type, toBb, afterSuccess){
   }
 
 
+  function prettyFromToken(tok){
+    const t = (tok || "").trim();
+    if (!t) return "";
+    const rank = t[0]?.toUpperCase();
+    const suit = t[1]?.toLowerCase();
+    if (!rank || !suit) return t;
+    return cardPretty(rank, suit);
+  }
+
+  function prettyFromHeroCards(raw){
+    const s = (raw || "").trim();
+    if (!s) return "??";
+    // Accept "AsKc" or "As Kc"
+    const toks = s.includes(" ")
+      ? s.split(/\s+/).filter(Boolean)
+      : (s.length === 4 ? [s.slice(0,2), s.slice(2,4)] : [s]);
+    return toks.map(prettyFromToken).join(" ");
+  }
+
+  function prettyFromBoardStreet(raw){
+    const s = (raw || "").trim();
+    if (!s) return "";
+    return s.split(/\s+/).filter(Boolean).map(prettyFromToken).join(" ");
+  }
+
   function formatHandText(data, h){
     const header = handHeader(data, h);
 
     const heroPos = h.heroPos || "?";
     const heroStack = (h.heroStackBb || "?");
     const heroCards = h.heroCards || "??";
-    const heroLine = `Hero (${heroPos}) | ${heroStack} bb | Cards: ${heroCards}`;
+    const heroLine = `Hero (${heroPos}) | ${heroStack} bb | Cards: ${prettyFromHeroCards(heroCards)}`;
 
     const villainLines = (h.villains && h.villains.length)
       ? h.villains.map((v, idx) => {
@@ -2363,6 +2405,17 @@ function addWizardActionValues(street, actorId, type, toBb, afterSuccess){
       const board = w.board || {};
       const streets = (w.streets || {});
 
+      // Board summary line (with suits) e.g. "J♠ 8♦ 2♣ | A♥ | 7♣"
+      const bf = board.flop ? prettyFromBoardStreet(board.flop) : "";
+      const bt = board.turn ? prettyFromToken(board.turn) : "";
+      const br = board.river ? prettyFromToken(board.river) : "";
+      if (bf || bt || br){
+        let boardLine = bf || "—";
+        if (bt) boardLine += " | " + bt;
+        if (br) boardLine += " | " + br;
+        lines.push("Board: " + boardLine);
+      }
+
       // MUST follow: Pre actions → Flop cards → Flop actions → Turn card → Turn actions → River card → River actions → Result
       const preActs = streets.preflop?.actions || [];
       if (preActs.length){
@@ -2370,21 +2423,21 @@ function addWizardActionValues(street, actorId, type, toBb, afterSuccess){
         preActs.forEach((a,i)=> lines.push(`  ${i+1}) ${a.actorLabel} (${a.actorPos}) ${a.type} +${a.investBb.toFixed(1)}bb`));
       }
 
-      if (board.flop) lines.push("FLOP CARDS: " + board.flop);
+      if (board.flop) lines.push("FLOP CARDS: " + prettyFromBoardStreet(board.flop));
       const flopActs = streets.flop?.actions || [];
       if (flopActs.length){
         lines.push("FLOP ACTIONS:");
         flopActs.forEach((a,i)=> lines.push(`  ${i+1}) ${a.actorLabel} (${a.actorPos}) ${a.type} +${a.investBb.toFixed(1)}bb`));
       }
 
-      if (board.turn) lines.push("TURN CARD: " + board.turn);
+      if (board.turn) lines.push("TURN CARD: " + prettyFromToken(board.turn));
       const turnActs = streets.turn?.actions || [];
       if (turnActs.length){
         lines.push("TURN ACTIONS:");
         turnActs.forEach((a,i)=> lines.push(`  ${i+1}) ${a.actorLabel} (${a.actorPos}) ${a.type} +${a.investBb.toFixed(1)}bb`));
       }
 
-      if (board.river) lines.push("RIVER CARD: " + board.river);
+      if (board.river) lines.push("RIVER CARD: " + prettyFromToken(board.river));
       const riverActs = streets.river?.actions || [];
       if (riverActs.length){
         lines.push("RIVER ACTIONS:");
@@ -2906,22 +2959,22 @@ function addWizardActionValues(street, actorId, type, toBb, afterSuccess){
     if (actorSel) actorSel.addEventListener("change", ()=>fillAmountSelectForStreet(st));
     if (typeSel) typeSel.addEventListener("change", ()=>fillAmountSelectForStreet(st));
   });
-  byId("addActionPre").onclick = () => addWizardAction("preflop","actActorPre","actTypePre","actToBbPre");
+  byId("addActionPre").onclick = () => addWizardActionSmart("preflop","Pre","actActorPre","actTypePre","actToBbPre");
   byId("addNewActionRowPre").onclick = () => addWizardEntryRow("preflop","Pre");
   byId("undoActionPre").onclick = () => undoWizardAction("preflop");
   byId("clearActionsPre").onclick = () => clearWizardStreet("preflop");
 
-  byId("addActionFlop").onclick = () => addWizardAction("flop","actActorFlop","actTypeFlop","actToBbFlop");
+  byId("addActionFlop").onclick = () => addWizardActionSmart("flop","Flop","actActorFlop","actTypeFlop","actToBbFlop");
   byId("addNewActionRowFlop").onclick = () => addWizardEntryRow("flop","Flop");
   byId("undoActionFlop").onclick = () => undoWizardAction("flop");
   byId("clearActionsFlop").onclick = () => clearWizardStreet("flop");
 
-  byId("addActionTurn").onclick = () => addWizardAction("turn","actActorTurn","actTypeTurn","actToBbTurn");
+  byId("addActionTurn").onclick = () => addWizardActionSmart("turn","Turn","actActorTurn","actTypeTurn","actToBbTurn");
   byId("addNewActionRowTurn").onclick = () => addWizardEntryRow("turn","Turn");
   byId("undoActionTurn").onclick = () => undoWizardAction("turn");
   byId("clearActionsTurn").onclick = () => clearWizardStreet("turn");
 
-  byId("addActionRiver").onclick = () => addWizardAction("river","actActorRiver","actTypeRiver","actToBbRiver");
+  byId("addActionRiver").onclick = () => addWizardActionSmart("river","River","actActorRiver","actTypeRiver","actToBbRiver");
   byId("addNewActionRowRiver").onclick = () => addWizardEntryRow("river","River");
   byId("undoActionRiver").onclick = () => undoWizardAction("river");
   byId("clearActionsRiver").onclick = () => clearWizardStreet("river");
