@@ -817,19 +817,22 @@ h1{
         </div>
 
         <div style="margin-top:10px;">
-          <div>
-            <label>Result</label>
-            <select id="qResult">
-              <option selected>Won</option>
-              <option>Lost</option>
-              <option>Chopped</option>
-              <option>Busted</option>
-            </select>
+          <label>Result</label>
+          <div class="resultChips" id="qResultChips" role="radiogroup" aria-label="Hand result">
+            <button type="button" class="chipPick is-on" data-result="Won">Won</button>
+            <button type="button" class="chipPick" data-result="Lost">Lost</button>
+            <button type="button" class="chipPick" data-result="Chopped">Chopped</button>
+            <button type="button" class="chipPick" data-result="Busted">Busted</button>
           </div>
+          <input type="hidden" id="qResult" value="Won" />
         </div>
 
         
         <label>Hero Cards</label>
+        <div class="heroShorthandRow">
+          <label>Quick type (e.g. AsKd or Ah Kd)</label>
+          <input id="qHeroShorthand" type="text" inputmode="text" autocomplete="off" placeholder="AsKd" />
+        </div>
         <div class="heroFacesRow">
           <div class="bigCard suit-white" id="qCard1Face">A♠</div>
           <div class="bigCard suit-white" id="qCard2Face">K♣</div>
@@ -3380,26 +3383,33 @@ h1{
   // (already set)
 
   // ---- Phase 1 wiring (quick chips, shorthand, share, same last) ----
-  byId("qResultChips").addEventListener("click", (e) => {
-    const btn = e.target.closest(".chipPick");
-    if (!btn || !byId("qResultChips").contains(btn)) return;
-    setQuickResultUI(btn.dataset.result);
-  });
-
-  byId("qHeroShorthand").addEventListener("blur", () => {
-    const raw = byId("qHeroShorthand").value.trim();
-    if (!raw) return;
-    const pair = parseTwoCardShorthand(raw);
-    if (!pair){
-      alert("Could not parse cards. Try AsKd, Ah Kd, Th 9c, or 10h 9c.");
-      return;
+  (function wirePhase1Quick(){
+    const chips = byId("qResultChips");
+    if (chips){
+      chips.addEventListener("click", (e) => {
+        const btn = e.target.closest(".chipPick");
+        if (!btn || !chips.contains(btn)) return;
+        setQuickResultUI(btn.dataset.result);
+      });
     }
-    byId("qC1Rank").value = pair[0].rank;
-    byId("qC1Suit").value = pair[0].suit;
-    byId("qC2Rank").value = pair[1].rank;
-    byId("qC2Suit").value = pair[1].suit;
-    byId("qC1Rank").dispatchEvent(new Event("change"));
-  });
+    const shIn = byId("qHeroShorthand");
+    if (shIn){
+      shIn.addEventListener("blur", () => {
+        const raw = shIn.value.trim();
+        if (!raw) return;
+        const pair = parseTwoCardShorthand(raw);
+        if (!pair){
+          alert("Could not parse cards. Try AsKd, Ah Kd, Th 9c, or 10h 9c.");
+          return;
+        }
+        byId("qC1Rank").value = pair[0].rank;
+        byId("qC1Suit").value = pair[0].suit;
+        byId("qC2Rank").value = pair[1].rank;
+        byId("qC2Suit").value = pair[1].suit;
+        byId("qC1Rank").dispatchEvent(new Event("change"));
+      });
+    }
+  })();
 
   byId("qSameAsLast").onclick = () => {
     applyLastQuickMetaToQuick();
