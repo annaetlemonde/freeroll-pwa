@@ -11,7 +11,7 @@
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#0b0f14" />
+  <meta name="theme-color" content="#0b0f14" id="metaThemeColor" />
 
   <!-- iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -152,11 +152,6 @@
       top: 0;
       z-index: 30;
       padding: 14px 0 12px;
-      background: linear-gradient(180deg, rgba(20,20,28,0.85), rgba(20,20,28,0.35));
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 1px 0 rgba(0,237,100,0.08);
       margin-bottom: 10px;
     }
 
@@ -703,6 +698,145 @@ h1{
       .cardsWrap{ grid-template-columns: 1fr; }
       .card{ padding: 14px 12px 14px 16px; }
     }
+
+    /* Open header: no frosted block behind logo */
+    .topbar{
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      box-shadow: none;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .srOnly{
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .quickCardLite .quickTagline{ max-width: 42ch; }
+    .quickCapture{
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .captureBlock{ display: flex; flex-direction: column; gap: 6px; }
+    .captureLbl{
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .quickHeroCombo--lite{
+      font-size: 20px !important;
+      padding: 14px 14px !important;
+    }
+    .posChips{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .posChip{
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--chip);
+      color: var(--body);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .posChip.is-on{
+      border-color: rgba(0,237,100,0.5);
+      color: var(--text);
+      background: var(--primary-soft);
+    }
+    .stackQuick{ max-width: 140px; }
+    .quickNotesArea{
+      min-height: 100px;
+      resize: vertical;
+    }
+    .detailsQuiet > summary{
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    /* Light mode (compare with dark) */
+    html[data-theme="light"]{
+      color-scheme: light;
+    }
+    html[data-theme="light"]{
+      --mongo-green:#00a35c;
+      --mongo-green-dim:#008f52;
+      --primary:#00a35c;
+      --secondary:#3949ab;
+      --tertiary:#5e35b1;
+      --neutral:#5c6570;
+      --primary-soft: rgba(0,163,92,0.12);
+      --dot-primary: transparent;
+      --dot-secondary: transparent;
+      --dot-tertiary: transparent;
+      --bg0:#f4f5f7;
+      --bg1:#eceef2;
+      --text:#0d1117;
+      --body:#2d333b;
+      --muted:#5c6570;
+      --border: rgba(0,0,0,0.1);
+      --border2: rgba(0,163,92,0.2);
+      --chip: rgba(0,0,0,0.04);
+      --input: #fff;
+      --input2: rgba(0,163,92,0.06);
+      --danger:#d32f2f;
+      --num-color:#0a5c36;
+      --btn-primary-top:#e8fff3;
+      --btn-primary-bot:#7dffc0;
+      --shadow: 0 8px 28px rgba(0,0,0,0.08);
+    }
+    html[data-theme="light"] body{
+      background-color: var(--bg0);
+      background-image: none;
+      color: var(--body);
+    }
+    html[data-theme="light"] .logo{
+      box-shadow: none;
+      border-color: rgba(0,0,0,0.08);
+    }
+    html[data-theme="light"] .card{
+      box-shadow: none;
+      border-left-color: var(--primary);
+    }
+    html[data-theme="light"] .item:hover{
+      background: rgba(0,163,92,0.06);
+    }
+    html[data-theme="light"] .tab{
+      background: #fff;
+      border-color: var(--border);
+      color: var(--body);
+    }
+    html[data-theme="light"] button.secondary{
+      background: #fff;
+      border-color: var(--border);
+      color: var(--text);
+    }
+    html[data-theme="light"] button.util{
+      background: #fff;
+      border-color: var(--border);
+      color: var(--body);
+    }
+    html[data-theme="light"] .miniActionEntry{
+      background: rgba(0,163,92,0.04);
+      border-color: rgba(0,163,92,0.2);
+    }
   </style>
 </head>
 
@@ -739,6 +873,7 @@ h1{
 
       <!-- Utilities (compact) -->
       <div class="utilRow" style="margin-top:10px;">
+        <button class="util" id="themeToggle" type="button" aria-label="Toggle color theme">Light mode</button>
         <button class="util" id="shareLatest" type="button">Share Latest</button>
         <button class="util" id="copyLatest" type="button">Copy Latest</button>
         <button class="util" id="exportJson" type="button">Export JSON</button>
@@ -794,62 +929,23 @@ h1{
     </div>
 
     <!-- QUICK LOG -->
-    <div class="card section--quick" id="quickCard">
+    <div class="card section--quick quickCardLite" id="quickCard">
       <div class="rowBetween">
         <div>
           <span class="territoryLabel">Quick log</span>
           <h2>Quick Log</h2>
-          <div class="muted">Fast capture between hands. Blinds persist after save; level is optional (expand when needed).</div>
+          <div class="muted quickTagline">Tap result, cards, seat. One note field for the story — level, blinds, and the rest stay tucked away until you need them.</div>
         </div>
         <span class="badgeWarn" id="quickStatus">Ready</span>
       </div>
 
-      <div class="subcard">
-        <h3>Hand Meta</h3>
-        <div class="metaRowActions">
-          <button type="button" class="metaLink" id="qSameAsLast">Same as last hand</button>
-        </div>
+      <div class="metaRowActions" style="margin-top:4px;">
+        <button type="button" class="metaLink" id="qSameAsLast">Same as last hand</button>
+      </div>
 
-        <div class="grid2tight">
-          <div>
-            <label>Blinds</label>
-            <div class="blinds3">
-              <div>
-                <label class="miniLbl">SB</label>
-                <select id="qSb"></select>
-              </div>
-              <div>
-                <label class="miniLbl">BB</label>
-                <select id="qBb"></select>
-              </div>
-              <div>
-                <label class="miniLbl">BB Ante</label>
-                <select id="qAnte"></select>
-              </div>
-            </div>
-          </div>
-          <div>
-            <details class="boardDetails" id="qLevelDetails" style="margin-top:0;">
-              <summary>Level (optional)</summary>
-              <div class="muted" style="margin-bottom:8px;">Skip if you only care about blinds for this hand.</div>
-              <select id="qLevel"></select>
-            </details>
-          </div>
-        </div>
-
-        <div class="grid2tight" style="margin-top:10px;">
-          <div>
-            <label>Hero Position</label>
-            <select id="qHeroPos"></select>
-          </div>
-          <div>
-            <label>Hero Stack (bb)</label>
-            <input id="qHeroStack" inputmode="decimal" placeholder="e.g., 32" />
-          </div>
-        </div>
-
-        <div style="margin-top:10px;">
-          <label>Result</label>
+      <div class="quickCapture">
+        <div class="captureBlock">
+          <span class="captureLbl">Result</span>
           <div class="resultChips" id="qResultChips" role="radiogroup" aria-label="Hand result">
             <button type="button" class="chipPick is-on" data-result="Won">Won</button>
             <button type="button" class="chipPick" data-result="Lost">Lost</button>
@@ -859,145 +955,168 @@ h1{
           <input type="hidden" id="qResult" value="Won" />
         </div>
 
-        <div style="margin-top:10px;">
-          <label>Showdown?</label>
-          <div class="resultChips" id="qShowdownChips" role="radiogroup" aria-label="Showdown">
-            <button type="button" class="chipPick is-on" data-sd="no">No / N/A</button>
-            <button type="button" class="chipPick" data-sd="yes">Yes</button>
-          </div>
-          <input type="hidden" id="qShowdown" value="no" />
+        <div class="captureBlock">
+          <span class="captureLbl">Your cards</span>
+          <input id="qHeroCombo" class="quickHeroCombo quickHeroCombo--lite" type="text" inputmode="text" autocomplete="off" placeholder="QQ · AKs · JTs" />
         </div>
+
+        <div class="captureBlock">
+          <span class="captureLbl">Seat &amp; stack</span>
+          <div class="rowBetween" style="align-items:flex-end; margin:0;">
+            <div class="posChips" id="qHeroPosChips" role="group" aria-label="Hero position"></div>
+            <select id="qHeroPos" class="srOnly" aria-label="Hero position (list)"></select>
+            <input id="qHeroStack" class="stackQuick" inputmode="decimal" placeholder="bb" />
+          </div>
+        </div>
+
+        <div class="captureBlock">
+          <span class="captureLbl">What happened</span>
+          <textarea id="qHandNotes" class="quickNotesArea" placeholder="Freeform: preflop through river, one stream of thought."></textarea>
+        </div>
+      </div>
+
+      <details class="boardDetails detailsQuiet" id="qExactHeroDetails" style="margin-top:12px;">
+        <summary>Exact suits (optional)</summary>
+        <div class="heroShorthandRow">
+          <label>Two cards (e.g. AsKd)</label>
+          <input id="qHeroShorthand" type="text" inputmode="text" autocomplete="off" placeholder="AsKd" />
+        </div>
+        <div class="heroFacesRow">
+          <div class="bigCard suit-white" id="qCard1Face">A♠</div>
+          <div class="bigCard suit-white" id="qCard2Face">K♣</div>
+        </div>
+        <div class="heroSelectRow" aria-label="Hero card selection">
+          <select id="qC1Rank"></select>
+          <select id="qC1Suit"></select>
+          <select id="qC2Rank"></select>
+          <select id="qC2Suit"></select>
+        </div>
+        <div class="pill" style="margin-top:10px;">Exact: <b id="qHeroCardsText">AsKc</b></div>
+      </details>
+
+      <details class="boardDetails detailsQuiet" id="qSdDetails" style="margin-top:8px;">
+        <summary>Showdown &amp; their cards (optional)</summary>
+        <div class="resultChips" id="qShowdownChips" role="radiogroup" aria-label="Showdown" style="margin-top:4px;">
+          <button type="button" class="chipPick is-on" data-sd="no">No / N/A</button>
+          <button type="button" class="chipPick" data-sd="yes">Went to SD</button>
+        </div>
+        <input type="hidden" id="qShowdown" value="no" />
         <div id="qVillainShowdownWrap" style="display:none; margin-top:10px;">
-          <label>Villain’s cards (optional)</label>
-          <input id="qVillainShowdown" type="text" inputmode="text" autocomplete="off" placeholder="AK · TT · QJs — or AsKd if you remember suits" />
-          <div class="muted" style="margin-top:6px;">Shorthand is fine; exact suits optional.</div>
+          <label>Villain’s cards</label>
+          <input id="qVillainShowdown" type="text" inputmode="text" autocomplete="off" placeholder="AK · TT — suits optional" />
         </div>
+      </details>
 
-        
-        <label>Your hand</label>
-        <input id="qHeroCombo" class="quickHeroCombo" type="text" inputmode="text" autocomplete="off" placeholder="QQ · AKs · AJo · T9s" />
-        <div class="muted" style="margin-top:6px;">How you remember it: pairs, suited (s), offsuit (o). Exact suits optional.</div>
-
-        <details class="boardDetails" id="qExactHeroDetails" style="margin-top:12px;">
-          <summary>Exact suits (optional)</summary>
-          <div class="heroShorthandRow">
-            <label>Two cards (e.g. AsKd or Ah Kd)</label>
-            <input id="qHeroShorthand" type="text" inputmode="text" autocomplete="off" placeholder="AsKd" />
-          </div>
-          <div class="heroFacesRow">
-            <div class="bigCard suit-white" id="qCard1Face">A♠</div>
-            <div class="bigCard suit-white" id="qCard2Face">K♣</div>
-          </div>
-          <div class="heroSelectRow" aria-label="Hero card selection">
-            <select id="qC1Rank"></select>
-            <select id="qC1Suit"></select>
-            <select id="qC2Rank"></select>
-            <select id="qC2Suit"></select>
-          </div>
-          <div class="pill" style="margin-top:10px;">Exact: <b id="qHeroCardsText">AsKc</b></div>
-        </details>
-
-      </div>
-
-      <div class="subcard">
-        <div class="rowBetween">
+      <details class="boardDetails detailsQuiet" id="qMetaBlinds" style="margin-top:8px;">
+        <summary>Level &amp; blinds (optional)</summary>
+        <div class="muted" style="margin-bottom:10px;">Skip entirely if you’re just jotting the hand. Values still apply for “Same as last” when you do fill them.</div>
+        <div class="grid2tight">
           <div>
-            <h3>Villains</h3>
-            <div class="muted">Add involved villains. (Position + stack)</div>
+            <label class="miniLbl">Level</label>
+            <select id="qLevel"></select>
           </div>
-          <button class="secondary" id="qAddVillainBtn" type="button">+ Add villain</button>
-        </div>
-        <div id="qVillainsList" class="list"></div>
-      </div>
-
-      <div class="grid2tight" style="margin-top:10px;">
-        <div>
-          <label>Preflop (quick text)</label>
-          <textarea id="qPreflop" placeholder="Hero opens 2.2bb, CO calls, BB 3bets 8bb, Hero calls..."></textarea>
-        </div>
-        <div>
-          <label>Postflop (quick text)</label>
-          <textarea id="qPostflop" placeholder="Flop J♠8♦2♣: BB bets 5bb, Hero calls..."></textarea>
-        </div>
-      </div>
-
-      <div class="grid3">
-        
-        <div>
-          <details class="boardDetails" id="qBoardDetails">
-            <summary>Board &amp; runout (optional)</summary>
-            <div class="muted" style="margin-bottom:10px;">Ranks + texture first — how live players remember. Turn/river = what changed.</div>
-            <div class="quickBoardGrid">
+          <div>
+            <label class="miniLbl">Blinds</label>
+            <div class="blinds3">
               <div>
-                <label>Flop ranks</label>
-                <input id="qFlopRanks" type="text" inputmode="text" maxlength="12" placeholder="e.g. K72 or K 7 2" autocomplete="off" />
+                <span class="miniLbl">SB</span>
+                <select id="qSb"></select>
               </div>
               <div>
-                <label>Flop texture</label>
-                <select id="qFlopTexture">
-                  <option value="" selected>— Skip —</option>
-                  <option value="rainbow">Rainbow (3 suits)</option>
-                  <option value="two-tone">Two-tone (flush possible)</option>
-                  <option value="monotone">Monotone (3 same suit)</option>
-                  <option value="paired">Paired flop</option>
-                  <option value="unknown">Not sure</option>
-                </select>
+                <span class="miniLbl">BB</span>
+                <select id="qBb"></select>
               </div>
               <div>
-                <label>Turn (what changed)</label>
-                <select id="qTurnRunout">
-                  <option value="" selected>— No turn / skip —</option>
-                  <option value="blank">Blank (bricks)</option>
-                  <option value="fd">Brings flush draw</option>
-                  <option value="flush">Flush completes</option>
-                  <option value="pair">Pairs the board</option>
-                  <option value="straight">Straight / straight draw completes</option>
-                  <option value="overcard">Scary overcard</option>
-                  <option value="bd">Backdoor gets there</option>
-                </select>
-              </div>
-              <div>
-                <label>River (what changed)</label>
-                <select id="qRiverRunout">
-                  <option value="" selected>— No river / skip —</option>
-                  <option value="blank">Blank</option>
-                  <option value="flush">Flush completes</option>
-                  <option value="bd">Backdoor completes</option>
-                  <option value="pair">Pairs / full house scare</option>
-                  <option value="straight">Straight completes</option>
-                  <option value="overcard">Overcard / scare</option>
-                </select>
-              </div>
-              <div>
-                <label>Turn card (optional)</label>
-                <input id="qTurnCard" type="text" inputmode="text" maxlength="8" placeholder="e.g. Td — or leave blank" autocomplete="off" />
-              </div>
-              <div>
-                <label>River card (optional)</label>
-                <input id="qRiverCard" type="text" inputmode="text" maxlength="8" placeholder="e.g. 2c — or leave blank" autocomplete="off" />
+                <span class="miniLbl">Ante</span>
+                <select id="qAnte"></select>
               </div>
             </div>
-            <div class="pill" style="margin-top:12px;">Summary: <b id="qBoardSummary">—</b></div>
-          </details>
+          </div>
         </div>
+      </details>
 
-        <div>
-          <label>Pot Size (bb, optional)</label>
-          <input id="qPotBb" inputmode="decimal" placeholder="e.g., 18" />
+      <details class="boardDetails detailsQuiet" id="qVillainsBlock" style="margin-top:8px;">
+        <summary>Opponents (optional)</summary>
+        <div class="rowBetween" style="margin-top:8px;">
+          <span class="muted">Position + stack if you care</span>
+          <button class="secondary" id="qAddVillainBtn" type="button">+ Add</button>
         </div>
-        <div>
-          <label>Turning Point</label>
-          <input id="qTurningPoint" placeholder="e.g., flop sizing created awkward turn decision..." />
+        <div id="qVillainsList" class="list"></div>
+      </details>
+
+      <details class="boardDetails detailsQuiet" id="qBoardDetails" style="margin-top:8px;">
+        <summary>Board, pot, turning point (optional)</summary>
+        <div class="muted" style="margin-bottom:10px;">Texture + runout tags, or exact cards — only if you remember.</div>
+        <div class="quickBoardGrid">
+          <div>
+            <label>Flop ranks</label>
+            <input id="qFlopRanks" type="text" inputmode="text" maxlength="12" placeholder="e.g. K72" autocomplete="off" />
+          </div>
+          <div>
+            <label>Flop texture</label>
+            <select id="qFlopTexture">
+              <option value="" selected>— Skip —</option>
+              <option value="rainbow">Rainbow (3 suits)</option>
+              <option value="two-tone">Two-tone (flush possible)</option>
+              <option value="monotone">Monotone (3 same suit)</option>
+              <option value="paired">Paired flop</option>
+              <option value="unknown">Not sure</option>
+            </select>
+          </div>
+          <div>
+            <label>Turn (what changed)</label>
+            <select id="qTurnRunout">
+              <option value="" selected>— No turn / skip —</option>
+              <option value="blank">Blank (bricks)</option>
+              <option value="fd">Brings flush draw</option>
+              <option value="flush">Flush completes</option>
+              <option value="pair">Pairs the board</option>
+              <option value="straight">Straight / straight draw completes</option>
+              <option value="overcard">Scary overcard</option>
+              <option value="bd">Backdoor gets there</option>
+            </select>
+          </div>
+          <div>
+            <label>River (what changed)</label>
+            <select id="qRiverRunout">
+              <option value="" selected>— No river / skip —</option>
+              <option value="blank">Blank</option>
+              <option value="flush">Flush completes</option>
+              <option value="bd">Backdoor completes</option>
+              <option value="pair">Pairs / full house scare</option>
+              <option value="straight">Straight completes</option>
+              <option value="overcard">Overcard / scare</option>
+            </select>
+          </div>
+          <div>
+            <label>Turn card (optional)</label>
+            <input id="qTurnCard" type="text" inputmode="text" maxlength="8" placeholder="e.g. Td" autocomplete="off" />
+          </div>
+          <div>
+            <label>River card (optional)</label>
+            <input id="qRiverCard" type="text" inputmode="text" maxlength="8" placeholder="e.g. 2c" autocomplete="off" />
+          </div>
         </div>
-      </div>
+        <div class="pill" style="margin-top:12px;">Summary: <b id="qBoardSummary">—</b></div>
+        <div class="grid2tight" style="margin-top:12px;">
+          <div>
+            <label>Pot (bb)</label>
+            <input id="qPotBb" inputmode="decimal" placeholder="optional" />
+          </div>
+          <div>
+            <label>Turning point</label>
+            <input id="qTurningPoint" placeholder="optional" />
+          </div>
+        </div>
+      </details>
 
       <div class="btns">
-        <button class="primary" id="qSaveHand" type="button">Save Quick Hand</button>
+        <button class="primary" id="qSaveHand" type="button">Save hand</button>
         <button class="secondary" id="qClear" type="button">Clear</button>
       </div>
 
       <div class="muted" id="quickEditHint" style="margin-top:10px; display:none;">
-        Editing a saved hand: press “Save Quick Hand” to update it.
+        Editing: tap Save hand to update.
       </div>
     </div>
 
@@ -1007,7 +1126,7 @@ h1{
         <div>
           <span class="territoryLabel" style="color:var(--tertiary);">Wizard</span>
           <h2>Wizard Log</h2>
-          <div class="muted">Structured capture with action list + auto pot + jam sizing. (Action-tree foundation)</div>
+          <div class="muted">One row per action: set actor → action → amount if needed, then Log action.</div>
         </div>
         <span class="badgeWarn" id="wizStatus">Meta not started</span>
       </div>
@@ -1110,7 +1229,7 @@ h1{
         <div class="rowBetween">
           <div>
             <h3>Preflop Actions</h3>
-            <div class="muted">Add actions in order. Raise sequences supported.</div>
+            <div class="muted">Log action appends to the list; Undo steps back one.</div>
           </div>
           <div class="pill potPill" id="potPillPre">Pot: —</div>
         </div>
@@ -1139,13 +1258,10 @@ h1{
           </div>
         </div>
 
-        <div id="extraEntriesPre" class="extraEntries"></div>
-
         <div class="btns">
-          <button class="secondary" id="addActionPre" type="button">Add Action</button>
-          <button class="secondary" id="addNewActionRowPre" type="button">+ Add New Action</button>
-          <button class="ghost" id="undoActionPre" type="button">Undo Last</button>
-          <button class="ghost" id="clearActionsPre" type="button">Clear Street</button>
+          <button class="primary" id="addActionPre" type="button">Log action</button>
+          <button class="ghost" id="undoActionPre" type="button">Undo</button>
+          <button class="ghost" id="clearActionsPre" type="button">Clear street</button>
         </div>
 
         <div id="actionsListPre" class="list"></div>
@@ -1202,13 +1318,10 @@ h1{
           </div>
         </div>
 
-        <div id="extraEntriesFlop" class="extraEntries"></div>
-
         <div class="btns">
-          <button class="secondary" id="addActionFlop" type="button">Add Action</button>
-          <button class="secondary" id="addNewActionRowFlop" type="button">+ Add New Action</button>
-          <button class="ghost" id="undoActionFlop" type="button">Undo Last</button>
-          <button class="ghost" id="clearActionsFlop" type="button">Clear Street</button>
+          <button class="primary" id="addActionFlop" type="button">Log action</button>
+          <button class="ghost" id="undoActionFlop" type="button">Undo</button>
+          <button class="ghost" id="clearActionsFlop" type="button">Clear street</button>
         </div>
 
         <div id="actionsListFlop" class="list"></div>
@@ -1253,13 +1366,10 @@ h1{
           </div>
         </div>
 
-        <div id="extraEntriesTurn" class="extraEntries"></div>
-
         <div class="btns">
-          <button class="secondary" id="addActionTurn" type="button">Add Action</button>
-          <button class="secondary" id="addNewActionRowTurn" type="button">+ Add New Action</button>
-          <button class="ghost" id="undoActionTurn" type="button">Undo Last</button>
-          <button class="ghost" id="clearActionsTurn" type="button">Clear Street</button>
+          <button class="primary" id="addActionTurn" type="button">Log action</button>
+          <button class="ghost" id="undoActionTurn" type="button">Undo</button>
+          <button class="ghost" id="clearActionsTurn" type="button">Clear street</button>
         </div>
 
         <div id="actionsListTurn" class="list"></div>
@@ -1312,13 +1422,10 @@ h1{
           </div>
         </div>
 
-        <div id="extraEntriesRiver" class="extraEntries"></div>
-
         <div class="btns">
-          <button class="secondary" id="addActionRiver" type="button">Add Action</button>
-          <button class="secondary" id="addNewActionRowRiver" type="button">+ Add New Action</button>
-          <button class="ghost" id="undoActionRiver" type="button">Undo Last</button>
-          <button class="ghost" id="clearActionsRiver" type="button">Clear Street</button>
+          <button class="primary" id="addActionRiver" type="button">Log action</button>
+          <button class="ghost" id="undoActionRiver" type="button">Undo</button>
+          <button class="ghost" id="clearActionsRiver" type="button">Clear street</button>
         </div>
 
         <div id="actionsListRiver" class="list"></div>
@@ -1651,11 +1758,13 @@ h1{
 
   function persistLastQuickMetaFromQuickForm(){
     const data = load();
-    const meta = readHandMeta(byId("qLevel"), byId("qSb"), byId("qBb"), byId("qAnte"), { levelOptional: true });
+    const meta = readHandMeta(byId("qLevel"), byId("qSb"), byId("qBb"), byId("qAnte"), { levelOptional: true, blindsOptional: true });
     const prev = data.lastQuickMeta && typeof data.lastQuickMeta === "object" ? data.lastQuickMeta : {};
     data.lastQuickMeta = {
-      ...meta,
       level: meta.level != null ? meta.level : (prev.level != null ? prev.level : null),
+      sb: meta.sb != null ? meta.sb : (prev.sb != null ? prev.sb : null),
+      bb: meta.bb != null ? meta.bb : (prev.bb != null ? prev.bb : null),
+      bbAnte: (meta.sb != null && meta.bb != null) ? (meta.bbAnte ?? 0) : (prev.bbAnte != null ? prev.bbAnte : 0),
       heroPos: byId("qHeroPos").value
     };
     save(data);
@@ -1674,11 +1783,18 @@ h1{
     if (!m || typeof m !== "object") return;
     const lv = m.level;
     byId("qLevel").value = (lv != null && lv !== "") ? String(lv) : "";
-    byId("qSb").value = String(m.sb ?? 200);
-    byId("qBb").value = String(m.bb ?? 400);
-    fillAnteSelect(byId("qAnte"), Number(byId("qBb").value), Number(m.bbAnte ?? 0));
-    byId("qAnte").value = String(m.bbAnte ?? 0);
+    if (m.sb != null && m.bb != null){
+      byId("qSb").value = String(m.sb);
+      byId("qBb").value = String(m.bb);
+      fillAnteSelect(byId("qAnte"), Number(byId("qBb").value), Number(m.bbAnte ?? 0));
+      byId("qAnte").value = String(m.bbAnte ?? 0);
+    } else {
+      byId("qSb").value = "";
+      byId("qBb").value = "";
+      fillAnteSelect(byId("qAnte"), "", 0);
+    }
     if (m.heroPos && POSITIONS.includes(m.heroPos)) byId("qHeroPos").value = m.heroPos;
+    syncQuickHeroPosChips();
   }
 
   function applyLastQuickMetaToWizard(){
@@ -1696,8 +1812,8 @@ h1{
   function resetQuickPreserveMeta(){
     byId("qHeroStack").value = "";
     byId("qHeroCombo").value = "";
-    byId("qPreflop").value = "";
-    byId("qPostflop").value = "";
+    const qn = byId("qHandNotes");
+    if (qn) qn.value = "";
     byId("qFlopRanks").value = "";
     byId("qFlopTexture").value = "";
     byId("qTurnRunout").value = "";
@@ -1730,6 +1846,13 @@ h1{
     if (sh) sh.value = "";
     const bd = byId("qBoardDetails");
     if (bd) bd.open = false;
+    const qmb = byId("qMetaBlinds");
+    if (qmb) qmb.open = false;
+    const qvb = byId("qVillainsBlock");
+    if (qvb) qvb.open = false;
+    const qsd = byId("qSdDetails");
+    if (qsd) qsd.open = false;
+    syncQuickHeroPosChips();
   }
 
   async function shareHandPlain(title, text){
@@ -1765,8 +1888,20 @@ h1{
     return String(n);
   }
 
-  function fillBlindSelect(sel, def){
-    sel.innerHTML = BLIND_VALUES.map(v => `<option value="${v}" ${v===def?"selected":""}>${fmtBlind(v)}</option>`).join("");
+  function fillBlindSelect(sel, def, optional){
+    const opts = [];
+    let defNum = null;
+    if (def !== null && def !== undefined && def !== ""){
+      const n = Number(def);
+      if (Number.isFinite(n)) defNum = n;
+    }
+    if (optional){
+      opts.push(`<option value="" ${defNum === null ? "selected" : ""}>— Skip —</option>`);
+    }
+    for (const v of BLIND_VALUES){
+      opts.push(`<option value="${v}" ${defNum === v ? "selected" : ""}>${fmtBlind(v)}</option>`);
+    }
+    sel.innerHTML = opts.join("");
   }
 
   function fillLevelSelect(sel, def, optional){
@@ -1786,10 +1921,15 @@ h1{
   }
 
   function fillAnteSelect(sel, bbValue, defAnte){
+    const bb = Number(bbValue);
+    if (bbValue === "" || bbValue == null || !Number.isFinite(bb) || bb <= 0){
+      sel.innerHTML = `<option value="0" selected>—</option>`;
+      return;
+    }
     const options = [
       { v: 0, label: "None (0)" },
-      { v: Math.round(bbValue * 0.5), label: "0.5 BB" },
-      { v: bbValue, label: "BB Ante (1 BB)" }
+      { v: Math.round(bb * 0.5), label: "0.5 BB" },
+      { v: bb, label: "BB Ante (1 BB)" }
     ];
     const uniq = [];
     for (const o of options) if (!uniq.some(u => u.v === o.v)) uniq.push(o);
@@ -1800,6 +1940,32 @@ h1{
   const POSITIONS = ["UTG","UTG+1","LJ","HJ","CO","BTN","SB","BB"];
   function fillPosSelect(sel, selected){
     sel.innerHTML = POSITIONS.map(p => `<option ${p===selected?"selected":""}>${p}</option>`).join("");
+  }
+
+  function syncQuickHeroPosChips(){
+    const wrap = byId("qHeroPosChips");
+    const sel = byId("qHeroPos");
+    if (!wrap || !sel) return;
+    const v = sel.value;
+    wrap.querySelectorAll(".posChip").forEach(btn => {
+      btn.classList.toggle("is-on", btn.dataset.pos === v);
+    });
+  }
+
+  function initQuickHeroPosChips(){
+    const wrap = byId("qHeroPosChips");
+    const sel = byId("qHeroPos");
+    if (!wrap || !sel) return;
+    wrap.innerHTML = POSITIONS.map(p =>
+      `<button type="button" class="posChip" data-pos="${p}">${p}</button>`
+    ).join("");
+    wrap.onclick = (e) => {
+      const b = e.target.closest(".posChip");
+      if (!b || !wrap.contains(b)) return;
+      sel.value = b.dataset.pos;
+      syncQuickHeroPosChips();
+    };
+    syncQuickHeroPosChips();
   }
 
   // ---- Cards ----
@@ -2135,39 +2301,67 @@ h1{
   // ---- Per-hand meta (Quick/Wizard) ----
   function initHandMeta(levelSel, sbSel, bbSel, anteSel, defaults, opts){
     const levelOpt = !!(opts && opts.levelOptional);
+    const blindsOpt = !!(opts && opts.blindsOptional);
     const defLv = defaults.level;
     fillLevelSelect(levelSel, levelOpt ? (defLv != null ? defLv : null) : (defLv || 1), levelOpt);
-    fillBlindSelect(sbSel, defaults.sb || 200);
-    fillBlindSelect(bbSel, defaults.bb || 400);
-    fillAnteSelect(anteSel, Number(bbSel.value), defaults.bbAnte || 0);
+    const defSb = defaults.sb != null ? defaults.sb : (blindsOpt ? null : 200);
+    const defBb = defaults.bb != null ? defaults.bb : (blindsOpt ? null : 400);
+    fillBlindSelect(sbSel, defSb, blindsOpt);
+    fillBlindSelect(bbSel, defBb, blindsOpt);
+    fillAnteSelect(anteSel, bbSel.value === "" ? "" : Number(bbSel.value), defaults.bbAnte || 0);
 
     sbSel.addEventListener("change", () => {
+      if (sbSel.value === ""){
+        if (blindsOpt){ bbSel.value = ""; fillAnteSelect(anteSel, "", 0); }
+        return;
+      }
       const sb = Number(sbSel.value);
       const target = sb * 2;
       if (BLIND_VALUES.includes(target)) bbSel.value = String(target);
-      fillAnteSelect(anteSel, Number(bbSel.value), Number(anteSel.value || 0));
+      fillAnteSelect(anteSel, bbSel.value === "" ? "" : Number(bbSel.value), Number(anteSel.value || 0));
     });
 
     bbSel.addEventListener("change", () => {
-      fillAnteSelect(anteSel, Number(bbSel.value), Number(anteSel.value || 0));
+      fillAnteSelect(anteSel, bbSel.value === "" ? "" : Number(bbSel.value), Number(anteSel.value || 0));
     });
   }
 
   function readHandMeta(levelSel, sbSel, bbSel, anteSel, opts){
     const levelOptional = !!(opts && opts.levelOptional);
+    const blindsOptional = !!(opts && opts.blindsOptional);
     const rawLv = levelSel.value;
     const level = (levelOptional && (rawLv === "" || rawLv == null))
       ? null
       : Number(rawLv);
-    return {
-      level,
-      sb: Number(sbSel.value),
-      bb: Number(bbSel.value),
-      bbAnte: Number(anteSel.value || 0)
-    };
+    let sb;
+    let bb;
+    let bbAnte;
+    if (blindsOptional){
+      const sbE = sbSel.value === "";
+      const bbE = bbSel.value === "";
+      if (sbE || bbE){
+        sb = null;
+        bb = null;
+        bbAnte = null;
+      } else {
+        sb = Number(sbSel.value);
+        bb = Number(bbSel.value);
+        bbAnte = Number(anteSel.value || 0);
+      }
+    } else {
+      sb = Number(sbSel.value);
+      bb = Number(bbSel.value);
+      bbAnte = Number(anteSel.value || 0);
+    }
+    return { level, sb, bb, bbAnte };
   }
 
   function formatBlinds(meta){
+    const sb = meta.sb;
+    const bb = meta.bb;
+    if (sb == null || bb == null || !Number.isFinite(Number(sb)) || !Number.isFinite(Number(bb))){
+      return "Blinds —";
+    }
     const ante = meta.bbAnte ? ` + ante ${fmtBlind(meta.bbAnte)}` : "";
     return `${fmtBlind(meta.sb)}/${fmtBlind(meta.bb)}${ante}`;
   }
@@ -2624,87 +2818,6 @@ h1{
     });
   }
 
-  function wizardActorOptionsHtml(){
-    if (!wizActive) return "";
-    return wizActive.hand.wizard.players.map(p =>
-      `<option value="${p.id}">${escapeHtml(p.label)} • ${escapeHtml(p.pos)}</option>`
-    ).join("");
-  }
-
-  function updateEntryRowAmountUI(rowEl){
-    const typeSel = rowEl.querySelector('select[data-role="type"]');
-    const amtInp  = rowEl.querySelector('input[data-role="toBb"]');
-    if (!typeSel || !amtInp) return;
-
-    const type = typeSel.value || "";
-    if (type !== "BET" && type !== "RAISE"){
-      amtInp.value = "";
-      amtInp.placeholder = "—";
-      amtInp.disabled = true;
-      amtInp.classList.add("disabledInput");
-    } else {
-      amtInp.disabled = false;
-      amtInp.placeholder = "e.g., 6.5";
-      amtInp.classList.remove("disabledInput");
-    }
-  }
-
-  function addWizardEntryRow(street, suffix){
-    const host = byId("extraEntries"+suffix);
-    if (!host) return;
-
-    const wrap = document.createElement("div");
-    wrap.className = "miniActionEntry";
-    wrap.innerHTML = `
-      <div class="streetGrid" style="margin-top:0;">
-        <div>
-          <label>Actor</label>
-          <select data-role="actor">${wizardActorOptionsHtml()}</select>
-        </div>
-        <div>
-          <label>Action</label>
-          <select data-role="type">
-            <option value="FOLD">Fold</option>
-            <option value="CHECK">Check</option>
-            <option value="CALL">Call</option>
-            <option value="BET">Bet</option>
-            <option value="RAISE">Raise</option>
-            <option value="JAM">Jam / All-in</option>
-          </select>
-        </div>
-        <div>
-          <label>Bet/Raise To (bb)</label>
-          <input data-role="toBb" inputmode="decimal" placeholder="—" disabled class="disabledInput"/>
-        </div>
-      </div>
-      <div class="miniBtns">
-        <button class="ghost mini" type="button" data-role="remove">Remove</button>
-      </div>
-    `;
-
-    const typeSel = wrap.querySelector('select[data-role="type"]');
-    const actorSel = wrap.querySelector('select[data-role="actor"]');
-    const amtInp = wrap.querySelector('input[data-role="toBb"]');
-
-    // default actor = match main selector if present
-    const mainActor = byId("actActor"+suffix);
-    if (mainActor && actorSel) actorSel.value = mainActor.value;
-
-    // wire amount enable/disable
-    if (typeSel) typeSel.addEventListener("change", ()=>updateEntryRowAmountUI(wrap));
-    updateEntryRowAmountUI(wrap);
-
-    wrap.querySelector('[data-role="remove"]').onclick = ()=> wrap.remove();
-
-    host.appendChild(wrap);
-  }
-
-  function addWizardNewActionRow(street, suffix, actorSelId, typeSelId, toInputId){
-    const ok = addWizardAction(street, actorSelId, typeSelId, toInputId);
-    if (ok) addWizardEntryRow(street, suffix);
-  }
-
-  
   function wizardTotalInvestedBb(hand, actorId){
     const w = hand.wizard || {};
     const streets = w.streets || {};
@@ -2811,22 +2924,6 @@ h1{
     return true;
   }
 
-  function addWizardActionSmart(street, suffix, actorSelId, typeSelId, toInputId){
-    // If the user has queued extra action rows, log the earliest queued row first (FIFO)
-    const host = byId("extraEntries" + suffix);
-    const row = host ? host.querySelector(".miniActionEntry") : null;
-    if (row){
-      const actorId = row.querySelector('select[data-role="actor"]')?.value || "";
-      const type = row.querySelector('select[data-role="type"]')?.value || "";
-      const toBb = row.querySelector('input[data-role="toBb"]')?.value || "";
-      const ok = addWizardActionValues(street, actorId, type, toBb, () => {
-        row.remove();
-      });
-      return ok;
-    }
-    return addWizardAction(street, actorSelId, typeSelId, toInputId);
-  }
-
   function addWizardAction(street, actorSelId, typeSelId, toInputId){
     const actorId = byId(actorSelId).value;
     const type = byId(typeSelId).value;
@@ -2885,7 +2982,7 @@ h1{
     const bbAnte = meta.bbAnte ?? 0;
 
     let blindsStr = (sb !== "" && bb !== "") ? `Blinds ${sb} /${bb}` : formatBlinds(meta);
-    if (bbAnte && Number(bbAnte) > 0) blindsStr += ` | BB Ante ${bbAnte}`;
+    if (meta.sb != null && meta.bb != null && bbAnte && Number(bbAnte) > 0) blindsStr += ` | BB Ante ${bbAnte}`;
 
     return `${headLeft} | ${game} | ${blindsStr}`;
   }
@@ -2944,7 +3041,12 @@ h1{
 
     if (h.mode === "quick"){
       const q = h.quick || {};
-      if (q.preflop) lines.push("Preflop: " + q.preflop.trim());
+      const hn = (q.handNotes || "").trim();
+      if (hn) lines.push("Notes: " + hn);
+      else {
+        if (q.preflop) lines.push("Preflop: " + q.preflop.trim());
+        if (q.postflop) lines.push("Postflop: " + q.postflop.trim());
+      }
       let boardLine = "";
       if (q.boardMeta && typeof q.boardMeta === "object"){
         boardLine = buildQuickBoardSummaryLine(q.boardMeta).trim();
@@ -3078,7 +3180,7 @@ h1{
       const bb = meta.bb ?? "";
       const bbAnte = meta.bbAnte ?? 0;
       let blinds = (sb !== "" && bb !== "") ? `Blinds ${sb} /${bb}` : formatBlinds(meta);
-      if (bbAnte && Number(bbAnte) > 0) blinds += ` | BB Ante ${bbAnte}`;
+      if (meta.sb != null && meta.bb != null && bbAnte && Number(bbAnte) > 0) blinds += ` | BB Ante ${bbAnte}`;
       return `${left} | ${game} | ${blinds}`;
     })();
 
@@ -3254,14 +3356,23 @@ h1{
     // meta
     const ql = h.meta?.level;
     byId("qLevel").value = (ql != null && ql !== "") ? String(ql) : "";
-    const qld = byId("qLevelDetails");
-    if (qld) qld.open = !!(ql != null && ql !== "");
-    byId("qSb").value = String(h.meta?.sb ?? 200);
-    byId("qBb").value = String(h.meta?.bb ?? 400);
-    fillAnteSelect(byId("qAnte"), Number(byId("qBb").value), Number(h.meta?.bbAnte ?? 0));
-    byId("qAnte").value = String(h.meta?.bbAnte ?? 0);
+    const sbM = h.meta?.sb;
+    const bbM = h.meta?.bb;
+    if (sbM != null && bbM != null){
+      byId("qSb").value = String(sbM);
+      byId("qBb").value = String(bbM);
+      fillAnteSelect(byId("qAnte"), Number(byId("qBb").value), Number(h.meta?.bbAnte ?? 0));
+      byId("qAnte").value = String(h.meta?.bbAnte ?? 0);
+    } else {
+      byId("qSb").value = "";
+      byId("qBb").value = "";
+      fillAnteSelect(byId("qAnte"), "", 0);
+    }
+    const qmb = byId("qMetaBlinds");
+    if (qmb) qmb.open = !!((ql != null && ql !== "") || sbM != null || bbM != null);
 
     byId("qHeroPos").value = h.heroPos || "BTN";
+    syncQuickHeroPosChips();
     byId("qHeroStack").value = h.heroStackBb || "";
     setQuickResultUI(h.result || "Won");
 
@@ -3269,8 +3380,14 @@ h1{
     setQuickShowdownUI(q.showdown ? "yes" : "no");
     const qvs = byId("qVillainShowdown");
     if (qvs) qvs.value = q.villainShowdown || "";
-    byId("qPreflop").value = q.preflop || "";
-    byId("qPostflop").value = q.postflop || "";
+    const qn = byId("qHandNotes");
+    if (qn){
+      const merged = (q.handNotes || "").trim();
+      const legacy = [q.preflop, q.postflop].filter(x => x && String(x).trim()).join("\n\n");
+      qn.value = merged || legacy;
+    }
+    const qsd = byId("qSdDetails");
+    if (qsd) qsd.open = !!(q.showdown || (q.villainShowdown || "").trim());
     if (q.boardMeta && typeof q.boardMeta === "object"){
       applyQuickBoardMetaToForm(q.boardMeta);
     } else {
@@ -3312,6 +3429,8 @@ h1{
     clearContainer("qVillainsList");
     (h.villains || []).forEach(v => addVillainRow("qVillainsList", v));
     if (!(h.villains || []).length) addVillainRow("qVillainsList", { pos:"BB", stackBb:"", note:"" });
+    const qvb = byId("qVillainsBlock");
+    if (qvb) qvb.open = !!(h.villains && h.villains.length);
 
     const sh = byId("qHeroShorthand");
     if (sh) sh.value = byId("qHeroCardsText").textContent;
@@ -3322,10 +3441,11 @@ h1{
 
   byId("qSaveHand").onclick = () => {
     const data = load();
-    const meta = JSON.parse(JSON.stringify(readHandMeta(byId("qLevel"), byId("qSb"), byId("qBb"), byId("qAnte"), { levelOptional: true })));
+    const meta = JSON.parse(JSON.stringify(readHandMeta(byId("qLevel"), byId("qSb"), byId("qBb"), byId("qAnte"), { levelOptional: true, blindsOptional: true })));
     const boardMeta = readQuickBoardMetaFromForm();
     const boardSummary = buildQuickBoardSummaryLine(boardMeta);
     const sdYes = byId("qShowdown")?.value === "yes";
+    const hn = (byId("qHandNotes")?.value || "").trim();
 
     const hand = {
       id: editingHandId || uuid(),
@@ -3338,8 +3458,9 @@ h1{
       heroCards: resolveHeroCardsForSave(),
       villains: getVillains("qVillainsList"),
       quick: {
-        preflop: byId("qPreflop").value,
-        postflop: byId("qPostflop").value,
+        handNotes: hn,
+        preflop: hn,
+        postflop: "",
         heroCombo: byId("qHeroCombo").value.trim().toUpperCase(),
         boardMeta,
         board: boardSummary,
@@ -3572,23 +3693,19 @@ h1{
     if (actorSel) actorSel.addEventListener("change", ()=>fillAmountSelectForStreet(st));
     if (typeSel) typeSel.addEventListener("change", ()=>fillAmountSelectForStreet(st));
   });
-  byId("addActionPre").onclick = () => addWizardActionSmart("preflop","Pre","actActorPre","actTypePre","actToBbPre");
-  byId("addNewActionRowPre").onclick = () => addWizardNewActionRow("preflop","Pre","actActorPre","actTypePre","actToBbPre");
+  byId("addActionPre").onclick = () => addWizardAction("preflop","actActorPre","actTypePre","actToBbPre");
   byId("undoActionPre").onclick = () => undoWizardAction("preflop");
   byId("clearActionsPre").onclick = () => clearWizardStreet("preflop");
 
-  byId("addActionFlop").onclick = () => addWizardActionSmart("flop","Flop","actActorFlop","actTypeFlop","actToBbFlop");
-  byId("addNewActionRowFlop").onclick = () => addWizardNewActionRow("flop","Flop","actActorFlop","actTypeFlop","actToBbFlop");
+  byId("addActionFlop").onclick = () => addWizardAction("flop","actActorFlop","actTypeFlop","actToBbFlop");
   byId("undoActionFlop").onclick = () => undoWizardAction("flop");
   byId("clearActionsFlop").onclick = () => clearWizardStreet("flop");
 
-  byId("addActionTurn").onclick = () => addWizardActionSmart("turn","Turn","actActorTurn","actTypeTurn","actToBbTurn");
-  byId("addNewActionRowTurn").onclick = () => addWizardNewActionRow("turn","Turn","actActorTurn","actTypeTurn","actToBbTurn");
+  byId("addActionTurn").onclick = () => addWizardAction("turn","actActorTurn","actTypeTurn","actToBbTurn");
   byId("undoActionTurn").onclick = () => undoWizardAction("turn");
   byId("clearActionsTurn").onclick = () => clearWizardStreet("turn");
 
-  byId("addActionRiver").onclick = () => addWizardActionSmart("river","River","actActorRiver","actTypeRiver","actToBbRiver");
-  byId("addNewActionRowRiver").onclick = () => addWizardNewActionRow("river","River","actActorRiver","actTypeRiver","actToBbRiver");
+  byId("addActionRiver").onclick = () => addWizardAction("river","actActorRiver","actTypeRiver","actToBbRiver");
   byId("undoActionRiver").onclick = () => undoWizardAction("river");
   byId("clearActionsRiver").onclick = () => clearWizardStreet("river");
 
@@ -3658,7 +3775,24 @@ h1{
     alert("Wizard hand saved.");
   };
   // ---- Init selects and forms ----
+  const THEME_KEY = "5d_theme";
+  function getStoredTheme(){
+    try { return localStorage.getItem(THEME_KEY) || "dark"; } catch { return "dark"; }
+  }
+  function applyTheme(theme){
+    const t = theme === "light" ? "light" : "dark";
+    if (t === "light") document.documentElement.setAttribute("data-theme", "light");
+    else document.documentElement.removeAttribute("data-theme");
+    const meta = byId("metaThemeColor");
+    if (meta) meta.setAttribute("content", t === "light" ? "#f4f5f7" : "#0b0f14");
+    try { localStorage.setItem(THEME_KEY, t); } catch {}
+    const tb = byId("themeToggle");
+    if (tb) tb.textContent = t === "light" ? "Dark mode" : "Light mode";
+  }
+
   function init(){
+    applyTheme(getStoredTheme());
+
     // session
     renderSession();
 
@@ -3667,12 +3801,13 @@ h1{
     fillPosSelect(byId("wHeroPos"), "BTN");
 
     // meta selects
-    initHandMeta(byId("qLevel"), byId("qSb"), byId("qBb"), byId("qAnte"), { level:null, sb:200, bb:400, bbAnte:0 }, { levelOptional: true });
+    initHandMeta(byId("qLevel"), byId("qSb"), byId("qBb"), byId("qAnte"), { level:null, sb:null, bb:null, bbAnte:0 }, { levelOptional: true, blindsOptional: true });
     initHandMeta(byId("wLevel"), byId("wSb"), byId("wBb"), byId("wAnte"), { level:1, sb:200, bb:400, bbAnte:0 });
     byId("wShowdown").addEventListener("change", syncWizardShowdownVillainWrap);
     syncWizardShowdownVillainWrap();
     applyLastQuickMetaToQuick();
     applyLastQuickMetaToWizard();
+    initQuickHeroPosChips();
 
     // hero cards compact UI
     initHeroCards("q");
@@ -3693,6 +3828,11 @@ h1{
 
     // show quick by default
     showView("quick");
+
+    byId("themeToggle").onclick = () => {
+      const isLight = document.documentElement.getAttribute("data-theme") === "light";
+      applyTheme(isLight ? "dark" : "light");
+    };
   }
 
   // ---- History/Detail controls wired earlier ----
